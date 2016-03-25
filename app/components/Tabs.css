@@ -1,0 +1,42 @@
+.tabs {
+    padding: 20px 40px;
+}
+
+.tabs__panes {
+    position: relative;
+    overflow: hidden;
+}
+
+.tabs__panes-container {
+    margin: 0;
+    padding: 0;
+}
+
+.tabs__tab {
+    display: inline-block;
+    margin: 0 -1px;
+    padding: 0 20px;
+    font-weight: 600;
+    line-height: 50px;
+    color: #333333;
+    border: 1px solid #d9d9d9;
+    background-color: #f2f2f2;
+    cursor: pointer;
+}
+
+.tabs__tab:first-child {
+    margin: 0;
+}
+
+.tabs__tab_current {
+    padding-bottom: 1px;
+    border-bottom: 0;
+    background-color: #ffffff;
+}
+
+.tabs__tab-content {
+    margin: -1px 0 0;
+    padding: 20px;
+    border: 1px solid #d9d9d9;
+    background-color: #ffffff;
+}
