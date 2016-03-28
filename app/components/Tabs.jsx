@@ -2,7 +2,7 @@ import React from 'react';
 import DevicesList from './DevicesList';
 import deviceCredentials from './../mocks/device-credentials.js';
 
-const list = deviceCredentials.concat([]).reverse();
+const list = deviceCredentials.concat([]).splice(2, 6).reverse();
 
 require('./Tabs.css');
 
