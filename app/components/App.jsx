@@ -28,7 +28,8 @@ export default class App extends React.Component {
           </div>
         </div>
         <footer className="page__footer">
-          footer
+            Copyright © 2003 - 2016, <a href="">BMC Software</a> (<a href="">Full Copyright Information</a>)<br/>
+            BMC Discovery (DEVELOPMENT) Version: 0.0 Release: 0
         </footer>
       </div>
     );

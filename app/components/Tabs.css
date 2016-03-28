@@ -18,20 +18,22 @@
     line-height: 50px;
     color: #333333;
     text-align: center;
-    border-right: 1px solid #d9d9d9;
+    border-bottom: 1px solid #d9d9d9;
     background-color: #f2f2f2;
     cursor: pointer;
 }
 
+.tabs__tab:not(:first-child) {
+    border-left: 1px solid #d9d9d9;
+}
+
 .tabs__tab_current {
     padding-bottom: 1px;
-    border-bottom: 0;
+    border-bottom: 1px solid transparent;
     background-color: #ffffff;
 }
 
 .tabs__tab-content {
-    margin: -1px 0 0;
     padding: 20px;
-    border: 1px solid #d9d9d9;
     background-color: #ffffff;
 }
