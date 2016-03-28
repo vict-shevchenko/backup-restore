@@ -1,10 +1,7 @@
-.tabs {
-    font-size: 0.875em;
-}
-
 .tabs__panes {
     position: relative;
     overflow: hidden;
+    font-size: 0.875em;
 }
 
 .tabs__panes-container {

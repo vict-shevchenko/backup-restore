@@ -1,5 +1,8 @@
 import React from 'react';
 import DevicesList from './DevicesList';
+import deviceCredentials from './../mocks/device-credentials.js';
+
+const list = deviceCredentials.concat([]).reverse();
 
 require('./Tabs.css');
 
@@ -13,6 +16,9 @@ const tabData = [
 class DBList extends DevicesList {
     constructor(props) {
         super(props);
+        this.state = {
+            list: list
+        }
     }
 }
 

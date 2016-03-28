@@ -44,6 +44,9 @@ ListItem.propTypes = {
 export default class DevicesList extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            list: deviceCredentials
+        }
     }
 
     filerList (item) {
@@ -53,7 +56,7 @@ export default class DevicesList extends React.Component {
     render() {
         return (
             <div className="list list_sortable ">
-                {deviceCredentials.filter(this.filerList).map((credential, idx) => <ListItem credential={credential} key={idx} />)}
+                {this.state.list.filter(this.filerList).map((credential, idx) => <ListItem credential={credential} key={idx} />)}
             </div>
         );
     }
