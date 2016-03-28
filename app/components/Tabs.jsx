@@ -1,4 +1,5 @@
 import React from 'react';
+import DevicesList from './DevicesList';
 
 require('./Tabs.css');
 
@@ -8,6 +9,12 @@ const tabData = [
     { id: 2, name: 'Windows Proxies', component: 'WindowsProxiesComponent' },
     { id: 3, name: 'Tests', component: 'TestsComponent' }
 ];
+
+class DBList extends DevicesList {
+    constructor(props) {
+        super(props);
+    }
+}
 
 class Tab extends React.Component {
     constructor(props) {
@@ -66,9 +73,9 @@ class TabContent extends React.Component {
     render() {
         return (
             <div className="tabs__tab-content">
-                {this.props.currentTab === 0 ? <span>Tab 1</span> : null}
+                {this.props.currentTab === 0 ? <DevicesList /> : null}
 
-                {this.props.currentTab === 1 ? <span>Tab 2</span> : null}
+                {this.props.currentTab === 1 ? <DBList /> : null}
 
                 {this.props.currentTab === 2 ? <span>Tab 3</span> : null}
 

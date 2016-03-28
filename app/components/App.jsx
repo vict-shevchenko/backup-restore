@@ -1,12 +1,7 @@
 import React from 'react';
-import DevicesList from './DevicesList';
+import Tabs from './Tabs.jsx';
 import './App.css';
 
-class DBList extends DevicesList {
-    constructor(props) {
-        super(props);
-    }
-}
 
 export default class App extends React.Component {
   constructor(props) {
@@ -29,10 +24,7 @@ export default class App extends React.Component {
             <span className="page__title-text_sub">43 credentials</span>
           </div>
           <div className="page__content">
-            //tabs should go here
-            <DevicesList/>
-              //db
-              <DBList/>
+              <Tabs />
           </div>
         </div>
         <footer className="page__footer">
