@@ -1,4 +1,5 @@
 import React from 'react';
+import Filter from './Filter/Filter.jsx';
 import DevicesList from './DevicesList';
 
 require('./Tabs.css');
@@ -107,6 +108,7 @@ export default class TabsComponent extends React.Component {
                     tabData = {this.state.tabData}
                     changeTab = {this.changeTab.bind(this)}
                 />
+                <Filter />
                 <TabContent
                     currentTab = {this.state.currentTab}
                 />
