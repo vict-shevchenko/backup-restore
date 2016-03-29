@@ -62,6 +62,8 @@ class Filter extends Component {
 
     this.onTriggerClick = this.onTriggerClick.bind(this);
     this.onProtocolSelect = this.onProtocolSelect.bind(this);
+    this.onQuickFilterClick = this.onQuickFilterClick.bind(this);
+    this.onIPInputKeyDown = this.onIPInputKeyDown.bind(this);
   }
 
   onTriggerClick() {
@@ -71,15 +73,34 @@ class Filter extends Component {
   }
 
   onProtocolSelect(item) {
+    let { selectedItems } = this.state;
+    let itemIdx = selectedItems.indexOf(item);
+    if (itemIdx > -1) {
+      selectedItems.splice(itemIdx, 1);
+      this.setState({
+        selectedItems
+      })
+    }
+    else {
+      this.setState({
+        selectedItems: selectedItems.concat([item])
+      });
+    }
+  }
+
+  onQuickFilterClick(items) {
     this.setState({
-      selectedItems: this.state.selectedItems.concat([item.props.children])
+      selectedItems: items
     });
   }
 
-  onQuickFilterClick(item) {
-    this.setState({
-      selectedItems: item
-    });
+  onIPInputKeyDown(e) {
+    if (e.keyCode === 13) {
+      this.setState({
+        selectedItems: this.state.selectedItems.concat([e.target.value])
+      });
+      e.target.value = '';
+    }
   }
 
   renderAccordion() {
@@ -89,20 +110,29 @@ class Filter extends Component {
           autoFocus
           header="IP Filter"
           placeholder="Type ip address and press Enter"
+          onKeyDown={this.onIPInputKeyDown}
         />
 
         <AccordionItem multiSelect itemTitle="Protocols">
           {protocols.map((p, index) =>
             <AccordionListItem
               onSelect={this.onProtocolSelect}
+              selected={~this.state.selectedItems.indexOf(p)}
               key={index}
-            >{p}</AccordionListItem>
+              text={p}
+            />
           )}
         </AccordionItem>
 
         <AccordionItem itemTitle="Quick Filters">
           {quickFilters.map((item, index) =>
-            <AccordionListItem key={index}>{item.name}</AccordionListItem>)}
+            <AccordionListItem
+              onSelect={this.onQuickFilterClick}
+              key={index}
+              text={item.name}
+              value={item.protocols}
+            />
+          )}
         </AccordionItem>
       </Accordion>
     )

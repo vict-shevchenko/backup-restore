@@ -20,27 +20,31 @@ export default class AccordionItem extends Component {
   }
 
   onListItemClick(index, item) {
-    let selectedItems = this.state.selectedListItems;
-    selectedItems[index] = !selectedItems[index];
-
-    this.setState({
-      selectedListItems: selectedItems
-    });
-
     if (item.props.onSelect) {
-      item.props.onSelect(item);
+      item.props.onSelect(item.props.value || item.props.text);
+    }
+    else {
+      let selectedItems = this.state.selectedListItems;
+      selectedItems[index] = !selectedItems[index];
+
+      this.setState({
+        selectedListItems: selectedItems
+      });
+
     }
   }
 
   render() {
     const items = Children.map(this.props.children, (item, index) => {
       if (item.type === AccordionListItem) {
+        const value = item.props.value || item.props.text;
         return React.cloneElement(item, {
+          value,
           selected: item.props.selected || this.state.selectedListItems[index],
           checkbox: this.props.multiSelect,
           onClick: this.props.multiSelect ?
             this.onListItemClick.bind(this, index, item) :
-            item.props.onSelect
+            item.props.onSelect.bind(null, value)
         })
       }
       return item;
@@ -81,19 +85,21 @@ export function AccordionListItem(props) {
             checked={props.selected}
           /> : ''
       }
-      {props.children}
+      {props.text}
     </div>
   )
 }
 
 export function AccordionInputItem(props) {
+  const { autoFocus, onKeyDown, placeholder } = props;
   return (
     <div>
       <div className="filter-accordion__item-header">{props.header}</div>
       <input
-        ref={props.autoFocus ? focusOnMount : null}
+        placeholder={placeholder}
+        onKeyDown={onKeyDown}
+        ref={autoFocus ? focusOnMount : null}
         className="filter-accordion__item-input"
-        placeholder={props.placeholder}
       />
     </div>
   )
