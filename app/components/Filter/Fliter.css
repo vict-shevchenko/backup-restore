@@ -1,0 +1,120 @@
+.filter-panel {
+    position: relative;
+    display: flex;
+    align-items: center;
+    height: 50px;
+}
+
+.filter__trigger {
+    font-size: 1em;
+    color: #00a79d;
+
+    border: none;
+    background: none;
+    outline: none;
+    cursor: pointer;
+}
+
+.filter__trigger:hover {
+    color: #008d85;
+}
+
+.filter__accordion {
+    position: absolute;
+    left: 100px;
+    top: 40px;
+    z-index: 1;
+
+    width: 300px;
+
+    border: 1px solid #d9d9d9;
+    background-color: #ffffff;
+}
+
+.filter-accordion__item-title {
+    height: 2em;
+    width: 100%;
+    padding: 0 0.5em;
+
+    line-height: 2em;
+    font-weight: 600;
+    color: #333333;
+}
+
+.filter-accordion__item:not(:first-child) {
+    border-top: 1px solid #d9d9d9;
+}
+
+.filter-accordion__item-body {
+    color: #333333;
+}
+
+.filter-accordion__item-header {
+    height: 1.875em;
+    padding: 0 10px;
+
+    line-height: 1.875em;
+    font-size: 0.8em;
+
+    background-color: #f2f2f2;
+    color: #999999;
+}
+
+.filter-accordion__list-item {
+    height: 2em;
+    padding: 0 0.5em;
+
+    line-height: 2em;
+    cursor: pointer;
+}
+
+.filter-accordion__list-item:hover {
+    background-color: #f2f2f2;
+}
+
+.filter-accordion__list-item_selected {
+    background-color: #e6f6f5;
+}
+
+.filter-accordion-list-item__checkbox {
+    margin-right: 0.8em;
+}
+
+.filter-accordion__item-input {
+    width: 100%;
+    height: 1.6em;
+    padding-left: 2em;
+
+    font-size: 1em;
+
+    border: none;
+
+    outline: none;
+}
+
+.filter__tag-panel {
+    margin-left: 10em;
+}
+
+.filter__tag {
+    display: inline-block;
+    height: 28px;
+    padding: 5px;
+    margin-right: 5px;
+
+    background-color: #dfdfdf;
+}
+
+.filter-tag__close {
+    height: 100%;
+    padding: 1px 10px;
+
+    background: none;
+    border: none;
+
+    font-weight: 700;
+    font-size: 1em;
+
+    cursor: pointer;
+    outline: none;
+}
