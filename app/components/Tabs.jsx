@@ -17,8 +17,11 @@ class DBList extends DevicesList {
     constructor(props) {
         super(props);
         this.state = {
-            list: list
+            list: list,
+            allChecked: false
         }
+
+        this.canAddCredentials = false;
     }
 }
 

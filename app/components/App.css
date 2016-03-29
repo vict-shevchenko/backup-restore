@@ -7,7 +7,7 @@ html {
   font-family: "Open Sans", "Arial", "Helvetica", "Sans-Serif"
 }
 
-body {
+body, input {
   margin: 0;
   padding: 0;
 }
@@ -50,6 +50,43 @@ a:hover:after {
 
 label {
   color: #999999;
+}
+
+.clearfix:after {
+  clear: both; }
+
+.clearfix:before, .clearfix:after {
+  display: table;
+  content: " ";
+}
+
+.pull-left {
+  float: left;
+}
+
+.pull-right {
+  float: right;
+}
+
+.btn {
+  height: 36px;
+  padding: 7px 19px;
+  font-size: 0.875em;
+  line-height: 1.429em;
+  border: none;
+  cursor: pointer;
+}
+
+.btn_primary {
+  color: #fff;
+  border-radius: 2px;
+  background-color: #f86e00;
+}
+
+.btn_primary:hover {
+  border-color: #df6300;
+  background-color: #df6300;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .dropdown-button {
