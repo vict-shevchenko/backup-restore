@@ -2,13 +2,20 @@
  * Created by xmityaz on 28.03.16.
  */
 
-import React, { Component, Children } from 'react';
+import React, { Component, Children, PropTypes } from 'react';
 
 function focusOnMount(el) {
   if (el != null) {
     el.focus();
   }
 }
+
+const AccordionItemPropTypes = {
+  onSelect: PropTypes.func,
+  multiSelect: PropTypes.bool,
+  children: PropTypes.any,
+  title: PropTypes.string
+};
 
 export default class AccordionItem extends Component {
   constructor(props) {
@@ -56,7 +63,7 @@ export default class AccordionItem extends Component {
           className="filter-accordion__item-title"
           onClick={this.props.onHeaderClick}
         >
-          {this.props.itemTitle}
+          {this.props.title}
         </div>
 
         {
@@ -67,6 +74,14 @@ export default class AccordionItem extends Component {
     )
   }
 }
+
+const AccordionListItemPropTypes = {
+  selected: PropTypes.bool,
+  checkbox: PropTypes.bool,
+  text: PropTypes.string,
+  value: PropTypes.any,
+  onClick: PropTypes.func
+};
 
 export function AccordionListItem(props) {
   const className = ['filter-accordion__list-item'];
@@ -90,6 +105,13 @@ export function AccordionListItem(props) {
   )
 }
 
+
+const AccordionInputItemPropTypes = {
+  autoFocus: PropTypes.bool,
+  onKeyDown: PropTypes.func,
+  placeholder: PropTypes.string
+};
+
 export function AccordionInputItem(props) {
   const { autoFocus, onKeyDown, placeholder } = props;
   return (
@@ -104,3 +126,6 @@ export function AccordionInputItem(props) {
     </div>
   )
 }
+
+AccordionListItem.propTypes = AccordionListItemPropTypes;
+AccordionInputItem.propTypes = AccordionInputItemPropTypes;

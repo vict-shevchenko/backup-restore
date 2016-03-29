@@ -4,8 +4,9 @@
 
 import React, { Component, Children } from 'react';
 import ReactDom from 'react-dom';
-import Accordion from './Accardion.jsx';
-import AccordionItem, { AccordionListItem, AccordionInputItem } from './AccordionItem.jsx';
+import Accordion from './Accardion';
+import AccordionItem, { AccordionListItem, AccordionInputItem } from './AccordionItem';
+import Tag from './Tag';
 import './Fliter.css';
 
 const protocols = ['SSH', 'Telnet', 'rlogin', 'Windows', 'vSphere', 'vCenter', 'SNMP', 'WBEM',
@@ -103,6 +104,17 @@ class Filter extends Component {
     }
   }
 
+  onCloseTag(item) {
+    let { selectedItems } = this.state;
+    let itemIdx = selectedItems.indexOf(item);
+
+    selectedItems.splice(itemIdx, 1);
+
+    this.setState({
+      selectedItems
+    });
+  }
+
   renderAccordion() {
     return (
       <Accordion>
@@ -113,18 +125,18 @@ class Filter extends Component {
           onKeyDown={this.onIPInputKeyDown}
         />
 
-        <AccordionItem multiSelect itemTitle="Protocols">
+        <AccordionItem multiSelect title="Protocols">
           {protocols.map((p, index) =>
             <AccordionListItem
               onSelect={this.onProtocolSelect}
-              selected={~this.state.selectedItems.indexOf(p)}
+              selected={this.state.selectedItems.indexOf(p) > -1}
               key={index}
               text={p}
             />
           )}
         </AccordionItem>
 
-        <AccordionItem itemTitle="Quick Filters">
+        <AccordionItem title="Quick Filters">
           {quickFilters.map((item, index) =>
             <AccordionListItem
               onSelect={this.onQuickFilterClick}
@@ -141,16 +153,12 @@ class Filter extends Component {
   render() {
     return (
       <div className="filter-panel">
-        <div className="filter__checkbox">
-          <input type="checkbox" />
-        </div>
-
         <button className="filter__trigger" onClick={this.onTriggerClick}>Filter</button>
 
         {this.state.isOpen ? this.renderAccordion() : ''}
         <div className="filter__tag-panel">
           {this.state.selectedItems.map((item, index) =>
-            <span className="filter__tag" key={index}>{item}</span>
+            <Tag key={index} onClose={this.onCloseTag.bind(this, item)}>{item}</Tag>
           )}
         </div>
       </div>
