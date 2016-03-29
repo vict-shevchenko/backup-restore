@@ -75,18 +75,37 @@ label {
   line-height: 1.429em;
   border: none;
   cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .btn_primary {
   color: #fff;
   border-radius: 2px;
   background-color: #f86e00;
+  border: 1px solid #df6300;
 }
 
 .btn_primary:hover {
   border-color: #df6300;
   background-color: #df6300;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn_secondary {
+  color: #666666;
+  border-radius: 2px;
+  background-color: #fff;
+  border: 1px solid #d9d9d9;
+}
+
+.btn_secondary:hover {
+  background-color: #f2f2f2;
+}
+
+.btn_small {
+  height: 28px;
+  padding: 5px 14px;
+  font-size: 0.75em;
+  line-height: 1.333em;
 }
 
 .dropdown-button {

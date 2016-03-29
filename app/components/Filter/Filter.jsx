@@ -153,7 +153,7 @@ class Filter extends Component {
   render() {
     return (
       <div className="filter-panel">
-        <button className="filter__trigger" onClick={this.onTriggerClick}>Filter</button>
+        <button className="btn btn_secondary btn_small" onClick={this.onTriggerClick}>Filter</button>
 
         {this.state.isOpen ? this.renderAccordion() : ''}
         <div className="filter__tag-panel">

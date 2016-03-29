@@ -1,17 +1,8 @@
 .filter-panel {
     position: relative;
-
-    display: inline-block;
-}
-
-.filter__trigger {
-    font-size: 1em;
-    color: #00a79d;
-
-    border: none;
-    background: none;
-    outline: none;
-    cursor: pointer;
+    display: flex;
+    flex: 1 1 auto;
+    padding-left: 10px;
 }
 
 .filter__trigger:hover {
@@ -21,6 +12,8 @@
 .filter__accordion {
     position: absolute;
     z-index: 1;
+    top: 100%;
+    left: 10px;
 
     width: 300px;
 
@@ -91,6 +84,7 @@
 
 .filter__tag-panel {
     display: inline-block;
+    margin-left: 10px;
 }
 
 .filter__tag {
@@ -98,8 +92,9 @@
     height: 28px;
     padding: 5px;
     margin-right: 5px;
-
+    font-size: 0.75em;
     background-color: #dfdfdf;
+    border-radius: 2px;
 }
 
 .filter-tag__close {

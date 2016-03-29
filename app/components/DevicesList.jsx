@@ -87,7 +87,7 @@ export default class DevicesList extends React.Component {
 
     renderAdd() {
         return (
-            <button className="btn btn_primary pull-right">
+            <button className="btn btn_primary list-menu__button">
                 Add
             </button>
         )
@@ -98,8 +98,8 @@ export default class DevicesList extends React.Component {
 
         return (
             <div>
-                <div className="list-menu clearfix">
-                    <div className="list-menu__button">
+                <div className="list-menu">
+                    <div className="list-menu__button btn btn_secondary btn_small">
                         <input type="checkbox" className="list_menu__select-all-checkbox" checked={this.state.allChecked} onChange={this.checkAll}/>
                         <span style={{transform: 'rotate(98grad)', display: 'inline-block'}}>></span>
                     </div>
