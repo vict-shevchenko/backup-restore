@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import deviceCredentials from './../mocks/device-credentials.js';
+import Filter from './Filter/Filter';
 import listStyles from './list.css'
 
 class ListItem extends React.Component {
@@ -102,8 +103,7 @@ export default class DevicesList extends React.Component {
                         <input type="checkbox" className="list_menu__select-all-checkbox" checked={this.state.allChecked} onChange={this.checkAll}/>
                         <span style={{transform: 'rotate(98grad)', display: 'inline-block'}}>></span>
                     </div>
-                    <span>---//Filter goes here</span>
-                    <span> ----//Tags go here</span>
+                    <Filter />
                     {add}
 
                 </div>

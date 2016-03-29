@@ -1,5 +1,4 @@
 import React from 'react';
-import Filter from './Filter/Filter.jsx';
 import DevicesList from './DevicesList';
 import deviceCredentials from './../mocks/device-credentials.js';
 
@@ -117,7 +116,6 @@ export default class TabsComponent extends React.Component {
                     tabData = {this.state.tabData}
                     changeTab = {this.changeTab.bind(this)}
                 />
-                <Filter />
                 <TabContent
                     currentTab = {this.state.currentTab}
                 />

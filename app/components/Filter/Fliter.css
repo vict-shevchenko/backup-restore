@@ -1,8 +1,7 @@
 .filter-panel {
     position: relative;
-    display: flex;
-    align-items: center;
-    height: 50px;
+
+    display: inline-block;
 }
 
 .filter__trigger {
@@ -21,8 +20,6 @@
 
 .filter__accordion {
     position: absolute;
-    left: 100px;
-    top: 40px;
     z-index: 1;
 
     width: 300px;
@@ -93,7 +90,7 @@
 }
 
 .filter__tag-panel {
-    margin-left: 10em;
+    display: inline-block;
 }
 
 .filter__tag {
