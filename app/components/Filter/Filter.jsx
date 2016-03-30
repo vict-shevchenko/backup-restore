@@ -2,55 +2,17 @@
  * Created by xmityaz on 23.03.16.
  */
 
-import React, { Component, Children } from 'react';
+import React, { Component, Children, PropTypes } from 'react';
 import ReactDom from 'react-dom';
 import Accordion from './Accardion';
 import AccordionItem, { AccordionListItem, AccordionInputItem } from './AccordionItem';
 import Tag from './Tag';
+import { protocols, quickFilters } from '../../mocks/credential-filters';
 import './Fliter.css';
 
-const protocols = ['SSH', 'Telnet', 'rlogin', 'Windows', 'vSphere', 'vCenter', 'SNMP', 'WBEM',
-  'Mainview z/OS Agent', 'Cisco IMC Web API', 'HP iLO Web API', 'EMC VPLEX REST API'];
-
-const quickFilters = [
-  {
-    name: 'ESX Host',
-    protocols: ['vSphere']
-  },
-  {
-    name: 'Mainframe',
-    protocols: ['Mainview z/OS Agent']
-  },
-  {
-    name: 'Management Controller',
-    protocols: ['SNMP', 'Cisco IMC Web API', 'HP iLO Web API']
-  },
-  {
-    name: 'Network Device',
-    protocols: ['SNMP']
-  },
-  {
-    name: 'Printer',
-    protocols: ['SNMP']
-  },
-  {
-    name: 'Storage',
-    protocols: ['WBEM', 'EMC VPLEX REST API']
-  },
-  {
-    name: 'UNIX Host',
-    protocols: ['SSH', 'Telnet', 'rlogin']
-  },
-  {
-    name: 'Windows',
-    protocols: ['Windows']
-  },
-  {
-    name: 'vCenter',
-    protocols: ['vCenter']
-  }
-];
-
+const propTypes = {
+  onFilterChange: PropTypes.func
+};
 
 class Filter extends Component {
   constructor(props) {
@@ -74,45 +36,46 @@ class Filter extends Component {
   }
 
   onProtocolSelect(item) {
-    let { selectedItems } = this.state;
+    let selectedItems = this.state.selectedItems.slice(); // call slice to avoid direct mutation of state
     let itemIdx = selectedItems.indexOf(item);
     if (itemIdx > -1) {
       selectedItems.splice(itemIdx, 1);
-      this.setState({
-        selectedItems
-      })
     }
     else {
-      this.setState({
-        selectedItems: selectedItems.concat([item])
-      });
+      selectedItems = selectedItems.concat([item]);
     }
+
+    this.setState({
+      selectedItems
+    }, this.props.onFilterChange.bind(null, selectedItems));
   }
 
   onQuickFilterClick(items) {
     this.setState({
       selectedItems: items
-    });
+    }, this.props.onFilterChange.bind(null, items));
   }
 
   onIPInputKeyDown(e) {
     if (e.keyCode === 13) {
+      const selectedItems = this.state.selectedItems.concat([e.target.value]);
+
       this.setState({
-        selectedItems: this.state.selectedItems.concat([e.target.value])
-      });
+        selectedItems
+      }, this.props.onFilterChange.bind(null, selectedItems));
       e.target.value = '';
     }
   }
 
   onCloseTag(item) {
-    let { selectedItems } = this.state;
+    let selectedItems = this.state.selectedItems.slice(); // call slice to avoid direct mutation of state
     let itemIdx = selectedItems.indexOf(item);
 
     selectedItems.splice(itemIdx, 1);
 
     this.setState({
       selectedItems
-    });
+    }, this.props.onFilterChange.bind(null, selectedItems));
   }
 
   renderAccordion() {
@@ -153,7 +116,12 @@ class Filter extends Component {
   render() {
     return (
       <div className="filter-panel">
-        <button className="btn btn_secondary btn_small" onClick={this.onTriggerClick}>Filter</button>
+        <button
+          className="btn btn_secondary btn_small"
+          onClick={this.onTriggerClick}
+        >
+          Filter
+        </button>
 
         {this.state.isOpen ? this.renderAccordion() : ''}
         <div className="filter__tag-panel">
@@ -165,5 +133,7 @@ class Filter extends Component {
     )
   }
 }
+
+Filter.propTypes = propTypes;
 
 export default Filter;

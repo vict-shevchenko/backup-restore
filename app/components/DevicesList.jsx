@@ -49,13 +49,16 @@ export default class DevicesList extends React.Component {
         super(props);
         this.state = {
             list: deviceCredentials,
-            allChecked: false
+            allChecked: false,
+            filterItems: []
         };
 
         this.canAddCredentials = true;
 
         this.checkAll = this.checkAll.bind(this);
         this.checkItem = this.checkItem.bind(this);
+        this.filterList = this.filterList.bind(this);
+        this.onFilterChange = this.onFilterChange.bind(this);
     }
 
     checkAll (e) {
@@ -81,8 +84,19 @@ export default class DevicesList extends React.Component {
         });
     }
 
-    filerList (item) {
-        return item;
+    onFilterChange(filterItems) {
+        this.setState({ filterItems });
+    }
+
+    filterList (item) {
+        console.log(item, this.state.filterItems);
+        if (!this.state.filterItems.length) {
+            return true;
+        } else {
+            return ~this.state.filterItems.findIndex(filterItem =>
+              (item.protocols.includes(filterItem))
+            );
+        }
     }
 
     renderAdd() {
@@ -103,12 +117,12 @@ export default class DevicesList extends React.Component {
                         <input type="checkbox" className="list_menu__select-all-checkbox" checked={this.state.allChecked} onChange={this.checkAll}/>
                         <span style={{transform: 'rotate(98grad)', display: 'inline-block'}}>></span>
                     </div>
-                    <Filter />
+                    <Filter onFilterChange={this.onFilterChange} />
                     {add}
 
                 </div>
                     <div className="list list_sortable">
-                        {this.state.list.filter(this.filerList).map((credential, idx) => <ListItem credential={credential} index={idx} key={idx} checkItem={this.checkItem} />)}
+                        {this.state.list.filter(this.filterList).map((credential, idx) => <ListItem credential={credential} index={idx} key={idx} checkItem={this.checkItem} />)}
                     </div>
             </div>
 
