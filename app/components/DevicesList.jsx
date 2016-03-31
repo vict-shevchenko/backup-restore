@@ -89,7 +89,6 @@ export default class DevicesList extends React.Component {
     }
 
     filterList (item) {
-        console.log(item, this.state.filterItems);
         if (!this.state.filterItems.length) {
             return true;
         } else {
