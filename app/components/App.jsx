@@ -48,6 +48,8 @@ export default class App extends React.Component {
     }
 
   render() {
+      const panes = ['device', 'db', 'win', 'test'];
+
     return (
       <div className="page">
         <div className="page__container">
@@ -64,21 +66,23 @@ export default class App extends React.Component {
                     <span className="page__title-text_sub">43 credentials</span>
                 </div>
                 <div className="page__content">
-                    <Tabs selected={0}>
-                        <Pane label="Devices"><CredentialsList
-                            type="device"
-                            credentials={this.state.device}
-                            checkAll = {this.checkAll}
-                            checkItem = {this.checkItem} />
+                    <Tabs selected={panes.indexOf(this.props.params.type)}>
+                        <Pane label="Devices" url="device">
+                            <CredentialsList
+                                type="device"
+                                credentials={this.state.device}
+                                checkAll = {this.checkAll}
+                                checkItem = {this.checkItem} />
                         </Pane>
-                        <Pane label="Databases"><CredentialsList
-                            type="db"
-                            credentials={this.state.db}
-                            checkAll = {this.checkAll}
-                            checkItem = {this.checkItem} />
+                        <Pane label="Databases" url="db" isActive="">
+                            <CredentialsList
+                                type="db"
+                                credentials={this.state.db}
+                                checkAll = {this.checkAll}
+                                checkItem = {this.checkItem} />
                         </Pane>
-                        <Pane label="Windows Proxies"><span>Pane 3</span></Pane>
-                        <Pane label="Tests"><span>Pane 4</span></Pane>
+                        <Pane label="Windows Proxies" url="win"><span>Pane 3</span></Pane>
+                        <Pane label="Tests" url="test"><span>Pane 4</span></Pane>
                     </Tabs>
                 </div>
             </div>

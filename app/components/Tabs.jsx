@@ -1,4 +1,5 @@
 import React from 'react';
+import { browserHistory } from 'react-router'
 require('./Tabs.css');
 
 export class Pane extends React.Component {
@@ -18,24 +19,21 @@ export class Pane extends React.Component {
 export class Tabs extends React.Component {
     constructor(props) {
         super(props);
-
-        this.state = {
-            selected: props.selected ? props.selected : 0
-        }
     }
 
-    handleClick(index, event) {
+    handleClick(index, url , event) {
         event.preventDefault();
-        this.setState({ selected: index });
+        const path = `/manage/credentials/${url}`;
+        browserHistory.push(path);
     }
 
     renderTitles() {
         function labels (child, index) {
-            let activeClass = (this.state.selected === index) ? 'tabs__tab tabs__tab_current' : 'tabs__tab';
+            let activeClass = (this.props.selected === index) ? 'tabs__tab tabs__tab_current' : 'tabs__tab';
             return (
                 <li key={index}
                     className={activeClass}
-                    onClick={this.handleClick.bind(this, index)}>
+                    onClick={this.handleClick.bind(this, index, child.props.url)}>
                     <span>{child.props.label}</span>
                 </li>
             );
@@ -52,7 +50,7 @@ export class Tabs extends React.Component {
     renderContent() {
         return (
             <div className="tabs__tab-content">
-                {this.props.children[this.state.selected]}
+                {this.props.children[this.props.selected]}
             </div>
         );
     }

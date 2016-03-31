@@ -8,7 +8,7 @@
     "lint:msg": "validate-commit-msg",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack",
-    "start": "webpack-dev-server --devtool eval --progress --hot --colors --content-base app",
+    "start": "webpack-dev-server --history-api-fallback --devtool eval --progress --hot --colors --content-base app",
     "deploy": "NODE_ENV=production webpack -p --config webpack.production.config.js",
     "validate": "npm ls",
     "commit": "git cz",
@@ -17,7 +17,8 @@
   "dependencies": {
     "babel-runtime": "~6.2.0",
     "react": "~0.14.3",
-    "react-dom": "~0.14.3"
+    "react-dom": "~0.14.3",
+    "react-router": "^2.0.1"
   },
   "devDependencies": {
     "babel-core": "~6.2.1",
