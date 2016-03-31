@@ -21,6 +21,7 @@ export default class App extends React.Component {
 
         this.checkAll = this.checkAll.bind(this);
         this.checkItem = this.checkItem.bind(this);
+        this.invertSelection = this.invertSelection.bind(this);
     }
 
     checkAll (checked, type) {
@@ -43,6 +44,19 @@ export default class App extends React.Component {
         Object.assign(stateUpd[type], this.state[type]);
 
         stateUpd[type].list[idx].checked = !stateUpd[type].list[idx].checked;
+
+        this.setState(stateUpd);
+    }
+
+    invertSelection (type) {
+        const stateUpd = {};
+        Object.defineProperty(stateUpd, type, {value: {}});
+        Object.assign(stateUpd[type], this.state[type]);
+
+        stateUpd[type].list = this.state[type].list.map(item => {
+            item.checked = !item.checked;
+            return item;
+        });
 
         this.setState(stateUpd);
     }
@@ -72,14 +86,16 @@ export default class App extends React.Component {
                                 type="device"
                                 credentials={this.state.device}
                                 checkAll = {this.checkAll}
-                                checkItem = {this.checkItem} />
+                                checkItem = {this.checkItem}
+                                invertSelection = {this.invertSelection}/>
                         </Pane>
                         <Pane label="Databases" url="db" isActive="">
                             <CredentialsList
                                 type="db"
                                 credentials={this.state.db}
                                 checkAll = {this.checkAll}
-                                checkItem = {this.checkItem} />
+                                checkItem = {this.checkItem}
+                                invertSelection = {this.invertSelection} />
                         </Pane>
                         <Pane label="Windows Proxies" url="win"><span>Pane 3</span></Pane>
                         <Pane label="Tests" url="test"><span>Pane 4</span></Pane>

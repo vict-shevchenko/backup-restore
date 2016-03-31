@@ -11,13 +11,23 @@
 
 .list-menu__button {
     flex: 0 1 auto;
+    cursor: default;
 }
 
 .list_menu__select-all-checkbox {
     vertical-align: -2px;
     margin-right: 10px;
+    cursor: pointer;
 }
 
+.list_menu__invert-selection {
+    cursor: pointer;
+    display: inline-block;
+}
+
+.list_menu__invert-selection:hover {
+    color: #333333;
+}
 
 .list-item {
     height: 65px;

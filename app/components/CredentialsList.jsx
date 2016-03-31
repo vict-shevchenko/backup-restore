@@ -52,6 +52,7 @@ export default class CredentialsList extends React.Component {
 
         this.checkAll = this.checkAll.bind(this);
         this.checkItem = this.checkItem.bind(this);
+        this.invertSelection = this.invertSelection.bind(this);
         this.filterList = this.filterList.bind(this);
         this.onFilterChange = this.onFilterChange.bind(this);
     }
@@ -64,6 +65,10 @@ export default class CredentialsList extends React.Component {
 
     checkItem (idx) {
         this.props.checkItem(idx, this.props.type);
+    }
+
+    invertSelection () {
+        this.props.invertSelection(this.props.type);
     }
 
     onFilterChange(filterItems) {
@@ -97,7 +102,7 @@ export default class CredentialsList extends React.Component {
                 <div className="list-menu">
                     <div className="list-menu__button btn btn_secondary btn_small">
                         <input type="checkbox" className="list_menu__select-all-checkbox" checked={allChecked} onChange={this.checkAll}/>
-                        <span style={{transform: 'rotate(98grad)', display: 'inline-block'}}>></span>
+                        <span className="list_menu__invert-selection" onClick={this.invertSelection}>🔄</span>
                     </div>
                     <Filter onFilterChange={this.onFilterChange} />
                     {add}
