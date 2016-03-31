@@ -29,7 +29,7 @@ class ListItem extends React.Component {
                         <label dangerouslySetInnerHTML={{__html: this.props.credential.protocols.join('<br/>')}}></label>
                     </div>
                     <div className="list-item__partial list-item__actions">
-                        <button className="dropdown-button">Actions</button>
+                        <button className="dropdown-button">Actions ▼</button>
                     </div>
                 </div>
             </div>
