@@ -1,28 +1,51 @@
 import React from 'react';
 import { Tabs, Pane } from './Tabs.jsx';
 import './App.css';
-import DevicesList from './DevicesList';
+import CredentialsList from './CredentialsList';
 import deviceCredentials from './../mocks/device-credentials.js';
 
-const list = deviceCredentials.concat([]).splice(2, 6).reverse();
 
-class DBList extends DevicesList {
+export default class App extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            list: list,
-            allChecked: false,
-            filterItems: []
+            device: {
+                list: deviceCredentials.map(item => Object.assign({}, item)),
+                canAdd: true
+            },
+            db: {
+                list: deviceCredentials.splice(2, 6).map(item => Object.assign({}, item)).reverse(),
+                canAdd: false
+            }
         };
 
-        this.canAddCredentials = false;
+        this.checkAll = this.checkAll.bind(this);
+        this.checkItem = this.checkItem.bind(this);
     }
-}
 
-export default class App extends React.Component {
-  constructor(props) {
-    super(props);
-  }
+    checkAll (checked, type) {
+
+        const stateUpd = {};
+        Object.defineProperty(stateUpd, type, {value: {}});
+        Object.assign(stateUpd[type], this.state[type]);
+
+        stateUpd[type].list = this.state[type].list.map(item => {
+            item.checked = checked;
+            return item;
+        });
+
+        this.setState(stateUpd);
+    }
+
+    checkItem (idx, type) {
+        const stateUpd = {};
+        Object.defineProperty(stateUpd, type, {value: {}});
+        Object.assign(stateUpd[type], this.state[type]);
+
+        stateUpd[type].list[idx].checked = !stateUpd[type].list[idx].checked;
+
+        this.setState(stateUpd);
+    }
 
   render() {
     return (
@@ -42,8 +65,18 @@ export default class App extends React.Component {
                 </div>
                 <div className="page__content">
                     <Tabs selected={0}>
-                        <Pane label="Devices"><DevicesList /></Pane>
-                        <Pane label="Databases"><DBList /></Pane>
+                        <Pane label="Devices"><CredentialsList
+                            type="device"
+                            credentials={this.state.device}
+                            checkAll = {this.checkAll}
+                            checkItem = {this.checkItem} />
+                        </Pane>
+                        <Pane label="Databases"><CredentialsList
+                            type="db"
+                            credentials={this.state.db}
+                            checkAll = {this.checkAll}
+                            checkItem = {this.checkItem} />
+                        </Pane>
                         <Pane label="Windows Proxies"><span>Pane 3</span></Pane>
                         <Pane label="Tests"><span>Pane 4</span></Pane>
                     </Tabs>

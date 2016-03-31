@@ -1,5 +1,4 @@
 import React, { PropTypes } from 'react';
-import deviceCredentials from './../mocks/device-credentials.js';
 import Filter from './Filter/Filter';
 import listStyles from './list.css'
 
@@ -44,16 +43,12 @@ ListItem.propTypes = {
     index: PropTypes.number.isRequired
 };
 
-export default class DevicesList extends React.Component {
+export default class CredentialsList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            list: deviceCredentials,
-            allChecked: false,
             filterItems: []
         };
-
-        this.canAddCredentials = true;
 
         this.checkAll = this.checkAll.bind(this);
         this.checkItem = this.checkItem.bind(this);
@@ -62,26 +57,13 @@ export default class DevicesList extends React.Component {
     }
 
     checkAll (e) {
-
-       const lst = this.state.list.map(item => {
-           item.checked = !this.state.allChecked;
-           return item;
-       });
-
-        this.setState({
-            allChecked: !this.state.allChecked,
-            list: lst
-        });
-
+        const checked = e.target.checked;
+        this.props.checkAll(checked, this.props.type);
         e.stopPropagation();
     }
 
     checkItem (idx) {
-        this.state.list[idx].checked = !this.state.list[idx].checked;
-
-        this.setState({
-            list: this.state.list
-        });
+        this.props.checkItem(idx, this.props.type);
     }
 
     onFilterChange(filterItems) {
@@ -107,13 +89,14 @@ export default class DevicesList extends React.Component {
     }
 
     render() {
-        const add = this.canAddCredentials ? this.renderAdd() : ''
+        const add = this.props.credentials.canAdd ? this.renderAdd() : '',
+            allChecked = this.props.credentials.list.every(item => item.checked);
 
         return (
             <div>
                 <div className="list-menu">
                     <div className="list-menu__button btn btn_secondary btn_small">
-                        <input type="checkbox" className="list_menu__select-all-checkbox" checked={this.state.allChecked} onChange={this.checkAll}/>
+                        <input type="checkbox" className="list_menu__select-all-checkbox" checked={allChecked} onChange={this.checkAll}/>
                         <span style={{transform: 'rotate(98grad)', display: 'inline-block'}}>></span>
                     </div>
                     <Filter onFilterChange={this.onFilterChange} />
@@ -121,10 +104,17 @@ export default class DevicesList extends React.Component {
 
                 </div>
                     <div className="list list_sortable">
-                        {this.state.list.filter(this.filterList).map((credential, idx) => <ListItem credential={credential} index={idx} key={idx} checkItem={this.checkItem} />)}
+                        {this.props.credentials.list.filter(this.filterList).map((credential, idx) => <ListItem credential={credential} index={idx} key={idx} checkItem={this.checkItem} />)}
                     </div>
             </div>
 
         );
     }
 }
+
+CredentialsList.propTypes = {
+    credentials: PropTypes.object.isRequired,
+    type: PropTypes.string.isRequired,
+    checkAll: PropTypes.func,
+    checkItem: PropTypes.func
+};
