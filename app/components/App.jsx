@@ -80,7 +80,7 @@ export default class App extends React.Component {
                     <span className="page__title-text_sub">43 credentials</span>
                 </div>
                 <div className="page__content">
-                    <Tabs selected={panes.indexOf(this.props.params.type)}>
+                    <Tabs selected={~panes.indexOf(this.props.params.type) ? panes.indexOf(this.props.params.type) : 0 }>
                         <Pane label="Devices" url="device">
                             <CredentialsList
                                 type="device"
