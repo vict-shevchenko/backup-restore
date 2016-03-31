@@ -1,7 +1,23 @@
 import React from 'react';
-import Tabs from './Tabs.jsx';
+import { Tabs, Pane } from './Tabs.jsx';
 import './App.css';
+import DevicesList from './DevicesList';
+import deviceCredentials from './../mocks/device-credentials.js';
 
+const list = deviceCredentials.concat([]).splice(2, 6).reverse();
+
+class DBList extends DevicesList {
+    constructor(props) {
+        super(props);
+        this.state = {
+            list: list,
+            allChecked: false,
+            filterItems: []
+        };
+
+        this.canAddCredentials = false;
+    }
+}
 
 export default class App extends React.Component {
   constructor(props) {
@@ -25,7 +41,12 @@ export default class App extends React.Component {
                     <span className="page__title-text_sub">43 credentials</span>
                 </div>
                 <div className="page__content">
-                    <Tabs />
+                    <Tabs selected={0}>
+                        <Pane label="Devices"><DevicesList /></Pane>
+                        <Pane label="Databases"><DBList /></Pane>
+                        <Pane label="Windows Proxies"><span>Pane 3</span></Pane>
+                        <Pane label="Tests"><span>Pane 4</span></Pane>
+                    </Tabs>
                 </div>
             </div>
             <div className="page__empty"></div>
