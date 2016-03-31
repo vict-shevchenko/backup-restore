@@ -20,13 +20,15 @@ class Filter extends Component {
 
     this.state = {
       isOpen: false,
-      selectedItems: []
+      selectedItems: [],
+      ip: ''
     };
 
     this.onTriggerClick = this.onTriggerClick.bind(this);
     this.onProtocolSelect = this.onProtocolSelect.bind(this);
     this.onQuickFilterClick = this.onQuickFilterClick.bind(this);
     this.onIPInputKeyDown = this.onIPInputKeyDown.bind(this);
+    this.onIPInputChange = this.onIPInputChange.bind(this);
   }
 
   onTriggerClick() {
@@ -37,7 +39,7 @@ class Filter extends Component {
 
   onProtocolSelect(item) {
     let selectedItems = this.state.selectedItems.slice(); // call slice to avoid direct mutation of state
-    let itemIdx = selectedItems.indexOf(item);
+    const itemIdx = selectedItems.indexOf(item);
     if (itemIdx > -1) {
       selectedItems.splice(itemIdx, 1);
     }
@@ -57,19 +59,26 @@ class Filter extends Component {
   }
 
   onIPInputKeyDown(e) {
-    if (e.keyCode === 13) {
-      const selectedItems = this.state.selectedItems.concat([e.target.value]);
+    const value = e.target.value;
+
+    if (e.keyCode === 13 && value && this.validateIP(value)) {
+      let { selectedItems } = this.state;
+      selectedItems = selectedItems.includes(value) ? selectedItems : selectedItems.concat([value]);
 
       this.setState({
-        selectedItems
+        selectedItems,
+        ip: ''
       }, this.props.onFilterChange.bind(null, selectedItems));
-      e.target.value = '';
     }
   }
 
+  onIPInputChange(e) {
+    this.setState({ ip: e.target.value });
+  }
+
   onCloseTag(item) {
-    let selectedItems = this.state.selectedItems.slice(); // call slice to avoid direct mutation of state
-    let itemIdx = selectedItems.indexOf(item);
+    const selectedItems = this.state.selectedItems.slice(); // call slice to avoid direct mutation of state
+    const itemIdx = selectedItems.indexOf(item);
 
     selectedItems.splice(itemIdx, 1);
 
@@ -78,21 +87,30 @@ class Filter extends Component {
     }, this.props.onFilterChange.bind(null, selectedItems));
   }
 
+  validateIP(ip) {
+    const reg = /^(?!0)(?!.*\.$)(((1?\d?\d|25[0-5]|2[0-4]\d)|\*)(\.|$)){4}$/;
+
+    return !ip || reg.test(ip);
+  }
+
   renderAccordion() {
     return (
       <Accordion>
         <AccordionInputItem
+          inputClass={this.validateIP(this.state.ip) ? '' : 'input_invalid'}
           autoFocus
           header="IP Filter"
           placeholder="Type ip address and press Enter"
           onKeyDown={this.onIPInputKeyDown}
+          onChange={this.onIPInputChange}
+          value={this.state.ip}
         />
 
         <AccordionItem multiSelect title="Protocols">
           {protocols.map((p, index) =>
             <AccordionListItem
               onSelect={this.onProtocolSelect}
-              selected={this.state.selectedItems.indexOf(p) > -1}
+              selected={this.state.selectedItems.includes(p)}
               key={index}
               text={p}
             />

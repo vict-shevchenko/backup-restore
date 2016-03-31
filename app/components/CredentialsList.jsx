@@ -45,10 +45,13 @@ ListItem.propTypes = {
 
 export default class CredentialsList extends React.Component {
     constructor(props) {
-        super(props);
-        this.state = {
-            filterItems: []
-        };
+      super(props);
+      this.state = {
+        filterCriteria: {
+          protocols: [],
+          ips: []
+        }
+      };
 
         this.checkAll = this.checkAll.bind(this);
         this.checkItem = this.checkItem.bind(this);
@@ -72,18 +75,33 @@ export default class CredentialsList extends React.Component {
     }
 
     onFilterChange(filterItems) {
-        this.setState({ filterItems });
+        let ips = [];
+        let protocols = [];
+        filterItems.forEach(function (item) {
+          if (item.split('.').length === 4) {
+            ips.push(item);
+          } else {
+            protocols.push(item);
+          }
+        });
+        this.setState({ filterCriteria: { ips, protocols } });
     }
 
-    filterList (item) {
-        if (!this.state.filterItems.length) {
-            return true;
-        } else {
-            return ~this.state.filterItems.findIndex(filterItem =>
-              (item.protocols.includes(filterItem))
-            );
+    filterList(item) {
+        let { ips, protocols } = this.state.filterCriteria;
+
+        if (!ips.length && !protocols.length) {
+          return true
         }
-    }
+        else if (!ips.length) {
+          return ~protocols.findIndex(filterItem => item.protocols.includes(filterItem));
+        } else if (!protocols.length) {
+          return ~ips.findIndex(filterItem => item.ips.includes(filterItem));
+        } else {
+          return ~protocols.findIndex(filterItem => item.protocols.includes(filterItem)) &&
+            ~ips.findIndex(filterItem => item.ips.includes(filterItem));
+        }
+      }
 
     renderAdd() {
         return (
@@ -108,9 +126,16 @@ export default class CredentialsList extends React.Component {
                     {add}
 
                 </div>
-                    <div className="list list_sortable">
-                        {this.props.credentials.list.filter(this.filterList).map((credential, idx) => <ListItem credential={credential} index={idx} key={idx} checkItem={this.checkItem} />)}
-                    </div>
+                <div className="list list_sortable">
+                    {this.props.credentials.list.filter(this.filterList).map((credential, idx) =>
+                      <ListItem
+                      credential={credential}
+                      index={idx}
+                      key={idx}
+                      checkItem={this.checkItem}
+                      />
+                    )}
+                </div>
             </div>
 
         );

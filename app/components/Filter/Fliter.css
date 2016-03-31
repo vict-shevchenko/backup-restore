@@ -82,6 +82,10 @@
     outline: none;
 }
 
+.input_invalid {
+    background-color: #FFEBEE;
+}
+
 .filter__tag-panel {
     display: inline-block;
     margin-left: 10px;
