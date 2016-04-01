@@ -7,7 +7,7 @@ import ReactDom from 'react-dom';
 import Accordion from './Accardion';
 import AccordionItem, { AccordionListItem, AccordionInputItem } from './AccordionItem';
 import Tag from './Tag';
-import { protocols, quickFilters } from '../../mocks/credential-filters';
+import { protocols, quickFilters } from '../../mocks/credential-filters.js';
 import './Fliter.css';
 
 const propTypes = {

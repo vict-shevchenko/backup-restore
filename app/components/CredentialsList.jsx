@@ -57,6 +57,16 @@ export default class CredentialsList extends React.Component {
         this.onFilterChange = this.onFilterChange.bind(this);
     }
 
+    componentDidMount () {
+        this.props.getData(this.props.type);
+    }
+
+    componentWillReceiveProps (nextProps) {
+        if (this.props.type != nextProps.type) {
+            this.props.getData(nextProps.type);
+        }
+    }
+
     checkAll (e) {
         const checked = e.target.checked;
         this.props.checkAll(checked, this.props.type);
@@ -97,6 +107,10 @@ export default class CredentialsList extends React.Component {
         const add = this.props.credentials.canAdd ? this.renderAdd() : '',
             allChecked = this.props.credentials.list.every(item => item.checked);
 
+        if (!this.props.credentials.list.length) {
+            return (<span>Loading</span>)
+        }
+
         return (
             <div>
                 <div className="list-menu">
@@ -108,9 +122,9 @@ export default class CredentialsList extends React.Component {
                     {add}
 
                 </div>
-                    <div className="list list_sortable">
-                        {this.props.credentials.list.filter(this.filterList).map((credential, idx) => <ListItem credential={credential} index={idx} key={idx} checkItem={this.checkItem} />)}
-                    </div>
+                <div className="list list_sortable">
+                    {this.props.credentials.list.filter(this.filterList).map((credential, idx) => <ListItem credential={credential} index={idx} key={idx} checkItem={this.checkItem} />)}
+                </div>
             </div>
 
         );

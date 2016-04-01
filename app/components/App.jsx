@@ -2,7 +2,15 @@ import React from 'react';
 import { Tabs, Pane } from './Tabs.jsx';
 import './App.css';
 import CredentialsList from './CredentialsList';
-import deviceCredentials from './../mocks/device-credentials.js';
+//import deviceCredentials from './../mocks/device-credentials.js';
+
+function prepareStateUpdateObject(type, state) {
+    const stateUpd = {};
+    Object.defineProperty(stateUpd, type, {value: {}, enumerable: true, writable: true});
+    Object.assign(stateUpd[type], state[type]);
+
+    return stateUpd;
+}
 
 
 export default class App extends React.Component {
@@ -10,11 +18,11 @@ export default class App extends React.Component {
         super(props);
         this.state = {
             device: {
-                list: deviceCredentials.map(item => Object.assign({}, item)),
+                list: [],//deviceCredentials.map(item => Object.assign({}, item)),
                 canAdd: true
             },
             db: {
-                list: deviceCredentials.splice(2, 6).map(item => Object.assign({}, item)).reverse(),
+                list: [],//deviceCredentials.splice(2, 6).map(item => Object.assign({}, item)).reverse(),
                 canAdd: false
             }
         };
@@ -22,13 +30,21 @@ export default class App extends React.Component {
         this.checkAll = this.checkAll.bind(this);
         this.checkItem = this.checkItem.bind(this);
         this.invertSelection = this.invertSelection.bind(this);
+        this.fetchCredentialsList = this.fetchCredentialsList.bind(this);
+    }
+
+    fetchCredentialsList (type) {
+        const stateUpd = prepareStateUpdateObject(type, this.state);
+        
+        fetch(`/mocks/${type}-credentials.json`).then(response => response.json()).then(json => {
+            stateUpd[type].list = json;
+            this.setState(stateUpd);
+        })
     }
 
     checkAll (checked, type) {
 
-        const stateUpd = {};
-        Object.defineProperty(stateUpd, type, {value: {}});
-        Object.assign(stateUpd[type], this.state[type]);
+        const stateUpd = prepareStateUpdateObject(type, this.state);
 
         stateUpd[type].list = this.state[type].list.map(item => {
             item.checked = checked;
@@ -39,9 +55,7 @@ export default class App extends React.Component {
     }
 
     checkItem (idx, type) {
-        const stateUpd = {};
-        Object.defineProperty(stateUpd, type, {value: {}});
-        Object.assign(stateUpd[type], this.state[type]);
+        const stateUpd = prepareStateUpdateObject(type, this.state);
 
         stateUpd[type].list[idx].checked = !stateUpd[type].list[idx].checked;
 
@@ -87,7 +101,8 @@ export default class App extends React.Component {
                                 credentials={this.state.device}
                                 checkAll = {this.checkAll}
                                 checkItem = {this.checkItem}
-                                invertSelection = {this.invertSelection}/>
+                                invertSelection = {this.invertSelection}
+                                getData={this.fetchCredentialsList} />
                         </Pane>
                         <Pane label="Databases" url="db" isActive="">
                             <CredentialsList
@@ -95,7 +110,8 @@ export default class App extends React.Component {
                                 credentials={this.state.db}
                                 checkAll = {this.checkAll}
                                 checkItem = {this.checkItem}
-                                invertSelection = {this.invertSelection} />
+                                invertSelection = {this.invertSelection}
+                                getData={this.fetchCredentialsList}/>
                         </Pane>
                         <Pane label="Windows Proxies" url="win"><span>Pane 3</span></Pane>
                         <Pane label="Tests" url="test"><span>Pane 4</span></Pane>
