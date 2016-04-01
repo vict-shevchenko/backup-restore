@@ -2,31 +2,26 @@ import React, { PropTypes } from 'react';
 import Filter from './Filter/Filter';
 import listStyles from './list.css'
 
-class ListItem extends React.Component {
-    constructor (props) {
-        super(props);
-    }
-
-    render () {
+function ListItem (props)  {
 
         return (
             <div className="list-item list-item_sortable">
-                <div className={"list-item__drag-section list-item__status_" + this.props.credential.status} ></div>
+                <div className={"list-item__drag-section list-item__status_" + props.credential.status} ></div>
                 <div className="list-item__main-section">
                     <div className="list-item__icon" >
                         <label className="full-size list-item__icon-label">
-                            <input type="checkbox" checked={this.props.credential.checked} onChange={this.props.checkItem.bind(this, this.props.index)} />
+                            <input type="checkbox" checked={props.credential.checked} onChange={props.checkItem.bind(this, props.index)} />
                         </label>
                     </div>
                     <div className="list-item__partial list-item__name" >
-                        <a href="#">{this.props.credential.name}</a>
+                        <a href="#">{props.credential.name}</a>
                     </div>
                     <div className="list-item__partial list-item__desc" >
-                        <label>Description:</label> <span>{this.props.credential.description}</span><br/>
-                        <label>Username:</label> <span>{this.props.credential.username}</span>
+                        <label>Description:</label> <span>{props.credential.description}</span><br/>
+                        <label>Username:</label> <span>{props.credential.username}</span>
                     </div>
                     <div className="list-item__partial list-item__desc" >
-                        <label dangerouslySetInnerHTML={{__html: this.props.credential.protocols.join('<br/>')}}></label>
+                        <label dangerouslySetInnerHTML={{__html: props.credential.protocols.join('<br/>')}}></label>
                     </div>
                     <div className="list-item__partial list-item__actions">
                         <button className="dropdown-button">Actions ▼</button>
@@ -34,7 +29,6 @@ class ListItem extends React.Component {
                 </div>
             </div>
         )
-    }
 }
 
 ListItem.propTypes = {
@@ -43,13 +37,17 @@ ListItem.propTypes = {
     index: PropTypes.number.isRequired
 };
 
+const credentialsCache = {};
+
 export default class CredentialsList extends React.Component {
     constructor(props) {
       super(props);
       this.state = {
+        areCredentialsLoading: true,
+        credentialsList: [],
         filterCriteria: {
-          protocols: [],
-          ips: []
+            protocols: [],
+            ips: []
         }
       };
 
@@ -61,27 +59,55 @@ export default class CredentialsList extends React.Component {
     }
 
     componentDidMount () {
-        this.props.getData(this.props.type);
+        this.fetchCredentialsList(this.props.type);
     }
 
     componentWillReceiveProps (nextProps) {
         if (this.props.type != nextProps.type) {
-            this.props.getData(nextProps.type);
+            this.setState({areCredentialsLoading: true});
+            this.fetchCredentialsList();
         }
     }
 
+    fetchCredentialsList () {
+        const type = this.props.type;
+
+
+        setTimeout(function () {
+            fetch(`/mocks/${type}-credentials.json`).then(response => response.json()).then(json => {
+                this.setState({
+                    areCredentialsLoading: false,
+                    credentialsList: json
+                });
+            });
+        }.bind(this), 1000)
+
+    }
+
     checkAll (e) {
-        const checked = e.target.checked;
-        this.props.checkAll(checked, this.props.type);
         e.stopPropagation();
+
+        const checked = e.target.checked,
+            list = this.state.credentialsList.map(item => {
+            item.checked = checked;
+            return item;
+        });
+
+        this.setState({credentialsList: list});
     }
 
     checkItem (idx) {
-        this.props.checkItem(idx, this.props.type);
+        this.state.credentialsList[idx].checked = !this.state.credentialsList[idx].checked;
+        this.setState({credentialsList: this.state.credentialsList});
     }
 
     invertSelection () {
-        this.props.invertSelection(this.props.type);
+        const lst = this.state.credentialsList.map(item => {
+            item.checked = !item.checked;
+            return item;
+        });
+
+        this.setState({credentialsList: lst});
     }
 
     onFilterChange(filterItems) {
@@ -122,10 +148,10 @@ export default class CredentialsList extends React.Component {
     }
 
     render() {
-        const add = this.props.credentials.canAdd ? this.renderAdd() : '',
-            allChecked = this.props.credentials.list.every(item => item.checked);
+        const add = this.props.canAdd ? this.renderAdd() : '',
+            allChecked = this.state.credentialsList.every(item => item.checked);
 
-        if (!this.props.credentials.list.length) {
+        if (this.state.areCredentialsLoading) {
             return (<span>Loading</span>)
         }
 
@@ -141,7 +167,7 @@ export default class CredentialsList extends React.Component {
 
                 </div>
                 <div className="list list_sortable">
-                    {this.props.credentials.list.filter(this.filterList).map((credential, idx) =>
+                    {this.state.credentialsList.filter(this.filterList).map((credential, idx) =>
                       <ListItem
                       credential={credential}
                       index={idx}
@@ -157,8 +183,6 @@ export default class CredentialsList extends React.Component {
 }
 
 CredentialsList.propTypes = {
-    credentials: PropTypes.object.isRequired,
-    type: PropTypes.string.isRequired,
-    checkAll: PropTypes.func,
-    checkItem: PropTypes.func
+    canAdd: PropTypes.bool.isRequired,
+    type: PropTypes.string.isRequired
 };

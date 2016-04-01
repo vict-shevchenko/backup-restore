@@ -2,81 +2,9 @@ import React from 'react';
 import { Tabs, Pane } from './Tabs.jsx';
 import './App.css';
 import CredentialsList from './CredentialsList';
-//import deviceCredentials from './../mocks/device-credentials.js';
 
-function prepareStateUpdateObject(type, state) {
-    const stateUpd = {};
-    Object.defineProperty(stateUpd, type, {value: {}, enumerable: true, writable: true});
-    Object.assign(stateUpd[type], state[type]);
-
-    return stateUpd;
-}
-
-
-export default class App extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            device: {
-                list: [],//deviceCredentials.map(item => Object.assign({}, item)),
-                canAdd: true
-            },
-            db: {
-                list: [],//deviceCredentials.splice(2, 6).map(item => Object.assign({}, item)).reverse(),
-                canAdd: false
-            }
-        };
-
-        this.checkAll = this.checkAll.bind(this);
-        this.checkItem = this.checkItem.bind(this);
-        this.invertSelection = this.invertSelection.bind(this);
-        this.fetchCredentialsList = this.fetchCredentialsList.bind(this);
-    }
-
-    fetchCredentialsList (type) {
-        const stateUpd = prepareStateUpdateObject(type, this.state);
-        
-        fetch(`/mocks/${type}-credentials.json`).then(response => response.json()).then(json => {
-            stateUpd[type].list = json;
-            this.setState(stateUpd);
-        })
-    }
-
-    checkAll (checked, type) {
-
-        const stateUpd = prepareStateUpdateObject(type, this.state);
-
-        stateUpd[type].list = this.state[type].list.map(item => {
-            item.checked = checked;
-            return item;
-        });
-
-        this.setState(stateUpd);
-    }
-
-    checkItem (idx, type) {
-        const stateUpd = prepareStateUpdateObject(type, this.state);
-
-        stateUpd[type].list[idx].checked = !stateUpd[type].list[idx].checked;
-
-        this.setState(stateUpd);
-    }
-
-    invertSelection (type) {
-        const stateUpd = {};
-        Object.defineProperty(stateUpd, type, {value: {}});
-        Object.assign(stateUpd[type], this.state[type]);
-
-        stateUpd[type].list = this.state[type].list.map(item => {
-            item.checked = !item.checked;
-            return item;
-        });
-
-        this.setState(stateUpd);
-    }
-
-  render() {
-      const panes = ['device', 'db', 'win', 'test'];
+export default function App (props) {
+    const panes = ['device', 'db', 'win', 'test'];
 
     return (
       <div className="page">
@@ -94,24 +22,16 @@ export default class App extends React.Component {
                     <span className="page__title-text_sub">43 credentials</span>
                 </div>
                 <div className="page__content">
-                    <Tabs selected={~panes.indexOf(this.props.params.type) ? panes.indexOf(this.props.params.type) : 0 }>
+                    <Tabs selected={~panes.indexOf(props.params.type) ? panes.indexOf(props.params.type) : 0 }>
                         <Pane label="Devices" url="device">
                             <CredentialsList
                                 type="device"
-                                credentials={this.state.device}
-                                checkAll = {this.checkAll}
-                                checkItem = {this.checkItem}
-                                invertSelection = {this.invertSelection}
-                                getData={this.fetchCredentialsList} />
+                                canAdd={true} />
                         </Pane>
-                        <Pane label="Databases" url="db" isActive="">
+                        <Pane label="Databases" url="db">
                             <CredentialsList
                                 type="db"
-                                credentials={this.state.db}
-                                checkAll = {this.checkAll}
-                                checkItem = {this.checkItem}
-                                invertSelection = {this.invertSelection}
-                                getData={this.fetchCredentialsList}/>
+                                canAdd={false} />
                         </Pane>
                         <Pane label="Windows Proxies" url="win"><span>Pane 3</span></Pane>
                         <Pane label="Tests" url="test"><span>Pane 4</span></Pane>
@@ -126,5 +46,4 @@ export default class App extends React.Component {
         </footer>
       </div>
     );
-  }
 }
