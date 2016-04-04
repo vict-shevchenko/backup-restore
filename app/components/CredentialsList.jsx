@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import Filter from './Filter/Filter';
+import Spinner from './Spinner.jsx';
 import listStyles from './list.css'
 
 function ListItem (props)  {
@@ -149,7 +150,7 @@ export default class CredentialsList extends React.Component {
             allChecked = this.state.credentialsList.every(item => item.checked);
 
         if (this.state.areCredentialsLoading) {
-            return (<span>Loading</span>)
+            return <Spinner />;
         }
 
         return (
