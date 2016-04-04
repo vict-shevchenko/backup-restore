@@ -65,14 +65,11 @@ export default class CredentialsList extends React.Component {
     componentWillReceiveProps (nextProps) {
         if (this.props.type != nextProps.type) {
             this.setState({areCredentialsLoading: true});
-            this.fetchCredentialsList();
+            this.fetchCredentialsList(nextProps.type);
         }
     }
 
-    fetchCredentialsList () {
-        const type = this.props.type;
-
-
+    fetchCredentialsList (type) {
         setTimeout(function () {
             fetch(`/mocks/${type}-credentials.json`).then(response => response.json()).then(json => {
                 this.setState({
