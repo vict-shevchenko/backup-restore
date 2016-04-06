@@ -68,6 +68,10 @@ label {
   float: right;
 }
 
+.btn[disabled] {
+  opacity: 0.5;
+}
+
 .btn {
   height: 36px;
   padding: 7px 19px;

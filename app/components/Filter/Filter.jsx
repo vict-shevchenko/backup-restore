@@ -135,7 +135,7 @@ class Filter extends Component {
     return (
       <div className="filter-panel">
         <button
-          className="btn btn_secondary btn_small"
+          className="btn btn_secondary btn_small list-menu__button"
           onClick={this.onTriggerClick}
         >
           Filter

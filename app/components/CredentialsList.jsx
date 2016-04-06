@@ -6,8 +6,9 @@ import listStyles from './list.css'
 function ListItem (props)  {
 
         return (
+
             <div className="list-item list-item_sortable">
-                <div className={"list-item__drag-section list-item__status_" + props.credential.status} ></div>
+                <div className={"list-item__drag-section list-item__status_" + props.credential.status + (props.credential.disabled ? ' list-item__status_disabled' : '')} ></div>
                 <div className="list-item__main-section">
                     <div className="list-item__icon" >
                         <label className="full-size list-item__icon-label">
@@ -23,9 +24,6 @@ function ListItem (props)  {
                     </div>
                     <div className="list-item__partial list-item__desc" >
                         <label dangerouslySetInnerHTML={{__html: props.credential.protocols.join('<br/>')}}></label>
-                    </div>
-                    <div className="list-item__partial list-item__actions">
-                        <button className="dropdown-button">Actions ▼</button>
                     </div>
                 </div>
             </div>
@@ -57,6 +55,7 @@ export default class CredentialsList extends React.Component {
         this.invertSelection = this.invertSelection.bind(this);
         this.filterList = this.filterList.bind(this);
         this.onFilterChange = this.onFilterChange.bind(this);
+        this.deactivate = this.deactivate.bind(this);
     }
 
     componentDidMount () {
@@ -108,6 +107,21 @@ export default class CredentialsList extends React.Component {
         this.setState({credentialsList: lst});
     }
 
+    deactivate () {
+        const checkedItems = this.state.credentialsList.filter(item => item.checked),
+              allDisabled = checkedItems.every(item => item.disabled),
+              allEnabled = checkedItems.every(item => !item.disabled),
+              someEnabled = !allDisabled && !allEnabled;
+
+        this.setState({credentialsList: this.state.credentialsList.map(item => {
+            if (item.checked) {
+                item.disabled = allEnabled || someEnabled
+            }
+
+            return item;
+        })});
+    }
+
     onFilterChange(filterItems) {
         let ips = [];
         let protocols = [];
@@ -147,7 +161,11 @@ export default class CredentialsList extends React.Component {
 
     render() {
         const add = this.props.canAdd ? this.renderAdd() : '',
-            allChecked = this.state.credentialsList.every(item => item.checked);
+            allChecked = this.state.credentialsList.every(item => item.checked),
+            selectedItems = this.state.credentialsList.filter(item => item.checked),
+            onMultiSectAction = selectedItems.length >= 1,
+            onSingleSelectAction = selectedItems.length === 1,
+            deactivationIcon = selectedItems.every(item => {return item.checked && item.disabled}) ? '🔊' : '🔇';
 
         if (this.state.areCredentialsLoading) {
             return <Spinner />;
@@ -160,6 +178,15 @@ export default class CredentialsList extends React.Component {
                         <input type="checkbox" className="list_menu__select-all-checkbox" checked={allChecked} onChange={this.checkAll}/>
                         <span className="list_menu__invert-selection" onClick={this.invertSelection}>🔄</span>
                     </div>
+                    <button className="btn btn_secondary btn_small list-menu__button list-menu__button_ribbon"
+                         disabled = {!onSingleSelectAction}>✎</button>
+                    <button className="btn btn_secondary btn_small list-menu__button list-menu__button_ribbon"
+                         disabled = {!onMultiSectAction} onClick={this.deactivate}>{deactivationIcon}</button>
+                    <button className="btn btn_secondary btn_small list-menu__button list-menu__button_ribbon"
+                         disabled = {!onMultiSectAction}>✘</button>
+                    <button className="btn btn_secondary btn_small list-menu__button list-menu__button_ribbon"
+                         disabled = {!onSingleSelectAction} >🔬</button>
+
                     <Filter onFilterChange={this.onFilterChange} />
                     {add}
 
