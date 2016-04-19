@@ -11,15 +11,8 @@
 }
 
 .filter__accordion {
-    position: absolute;
-    z-index: 1;
-    top: 100%;
-    left: 10px;
-
-    width: 300px;
-
+    position: relative;
     border: 1px solid #d9d9d9;
-    background-color: #ffffff;
 }
 
 .filter-accordion__item-title {

@@ -123,20 +123,6 @@ label {
   border-bottom-right-radius: 0 !important;
 }
 
-.dropdown-button {
-  color: #00a79d;
-  background: none;
-  border: none;
-}
-
-.dropdown-button:hover {
-  color: #008d85
-}
-
-.dropdown-button:after {
-
-}
-
 .full-size {
   width: 100%;
   height: 100%;

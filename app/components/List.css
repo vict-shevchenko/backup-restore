@@ -40,6 +40,15 @@
     color: #333333;
 }
 
+.list-menu__filter-menu {
+    position: absolute;
+    z-index: 1;
+    top: 100%;
+    left: 10px;
+    width: 300px;
+    background-color: #ffffff;
+}
+
 .list-item {
     height: 65px;
     display: flex;

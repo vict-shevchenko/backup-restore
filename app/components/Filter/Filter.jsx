@@ -96,15 +96,17 @@ class Filter extends Component {
   renderAccordion() {
     return (
       <Accordion>
-        <AccordionInputItem
-          inputClass={this.validateIP(this.state.ip) ? '' : 'input_invalid'}
-          autoFocus
-          header="IP Filter"
-          placeholder="Type ip address and press Enter"
-          onKeyDown={this.onIPInputKeyDown}
-          onChange={this.onIPInputChange}
-          value={this.state.ip}
-        />
+        <AccordionItem title="IP Filter">
+          <AccordionInputItem
+              inputClass={this.validateIP(this.state.ip) ? '' : 'input_invalid'}
+              autoFocus
+              header="IP Filter"
+              placeholder="Type ip address and press Enter"
+              onKeyDown={this.onIPInputKeyDown}
+              onChange={this.onIPInputChange}
+              value={this.state.ip}
+          />
+        </AccordionItem>
 
         <AccordionItem multiSelect title="Protocols">
           {protocols.map((p, index) =>
@@ -140,8 +142,10 @@ class Filter extends Component {
         >
           Filter
         </button>
-
-        {this.state.isOpen ? this.renderAccordion() : ''}
+        
+        <div className="list-menu__filter-menu">
+          {this.state.isOpen ? this.renderAccordion() : ''}
+        </div>
         <div className="filter__tag-panel">
           {this.state.selectedItems.map((item, index) =>
             <Tag key={index} onClose={this.onCloseTag.bind(this, item)}>{item}</Tag>
