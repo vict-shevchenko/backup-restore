@@ -10,13 +10,17 @@
     align-items: center;
 }
 
+.list-menu__button-grp {
+    margin-left: 10px;
+    flex: 0 0 auto;
+}
+
 .list-menu__button {
     flex: 0 0 auto;
     cursor: default;
 }
 
 .list-menu__button_ribbon {
-    margin-left: 10px;
     font-size: 1.125em;
     line-height: 0.875em;
 }

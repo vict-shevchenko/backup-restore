@@ -178,14 +178,16 @@ export default class CredentialsList extends React.Component {
                         <input type="checkbox" className="list_menu__select-all-checkbox" checked={allChecked} onChange={this.checkAll}/>
                         <span className="list_menu__invert-selection" onClick={this.invertSelection}>🔄</span>
                     </div>
-                    <button className="btn btn_secondary btn_small list-menu__button list-menu__button_ribbon"
-                         disabled = {!onSingleSelectAction}>✎</button>
-                    <button className="btn btn_secondary btn_small list-menu__button list-menu__button_ribbon"
-                         disabled = {!onMultiSectAction} onClick={this.deactivate}>{deactivationIcon}</button>
-                    <button className="btn btn_secondary btn_small list-menu__button list-menu__button_ribbon"
-                         disabled = {!onMultiSectAction}>✘</button>
-                    <button className="btn btn_secondary btn_small list-menu__button list-menu__button_ribbon"
-                         disabled = {!onSingleSelectAction} >🔬</button>
+                    <div className="btn-group list-menu__button-grp">
+                        <button className="btn btn_secondary btn_small list-menu__button list-menu__button_ribbon"
+                                disabled = {!onSingleSelectAction}>✎</button>
+                        <button className="btn btn_secondary btn_small list-menu__button list-menu__button_ribbon"
+                                disabled = {!onMultiSectAction} onClick={this.deactivate}>{deactivationIcon}</button>
+                        <button className="btn btn_secondary btn_small list-menu__button list-menu__button_ribbon"
+                                disabled = {!onMultiSectAction}>✘</button>
+                        <button className="btn btn_secondary btn_small list-menu__button list-menu__button_ribbon"
+                                disabled = {!onSingleSelectAction} >🔬</button>
+                    </div>
 
                     <Filter onFilterChange={this.onFilterChange} />
                     {add}
