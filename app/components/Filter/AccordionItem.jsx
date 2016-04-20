@@ -116,7 +116,6 @@ export function AccordionInputItem(props) {
   const { autoFocus, onKeyDown, placeholder, value, inputClass, onChange } = props;
   return (
     <div>
-      <div className="filter-accordion__item-header">{props.header}</div>
       <input
         placeholder={placeholder}
         value={value}

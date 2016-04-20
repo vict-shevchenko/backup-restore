@@ -16,13 +16,12 @@
 }
 
 .filter-accordion__item-title {
-    height: 2em;
     width: 100%;
-    padding: 0 0.5em;
-
-    line-height: 2em;
     font-weight: 600;
     color: #333333;
+    background-color: #f2f2f2;
+    line-height: 38px;
+    padding-left: 15px;
 }
 
 .filter-accordion__item:not(:first-child) {
@@ -66,7 +65,7 @@
 
 .filter-accordion__item-input {
     width: 100%;
-    height: 1.6em;
+    height: 2.25em;
     padding-left: 2em;
 
     font-size: 1em;
