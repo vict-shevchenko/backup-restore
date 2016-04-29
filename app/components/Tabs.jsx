@@ -23,16 +23,15 @@ export class Tabs extends React.Component {
 
     handleClick(index, url , event) {
         event.preventDefault();
-        const path = `/manage/credentials/${url}`;
-        browserHistory.push(path);
+        window.location.href = `/${url}`;
     }
 
     renderTitles() {
         function labels (child, index) {
-            let activeClass = (this.props.selected === index) ? 'tabs__tab tabs__tab_current' : 'tabs__tab';
+            const className = ['tabs__tab', index === this.props.selected ? 'tabs__tab_current': ''].join(' ');
             return (
                 <li key={index}
-                    className={activeClass}
+                    className={className}
                     onClick={this.handleClick.bind(this, index, child.props.url)}>
                     <span>{child.props.label}</span>
                 </li>
@@ -40,8 +39,11 @@ export class Tabs extends React.Component {
         }
         return (
             <nav className="tabs__panes">
-                <ul className="tabs__panes-container">
+                <ul className={'tabs__panes-container ' + (this.props.fullWidth ? 'tabs__panes-container_long': '')}>
                     {this.props.children.map(labels.bind(this))}
+                    <li className="tabs__tab tabs__tab_information">
+                        {this.props.notice}
+                    </li>
                 </ul>
             </nav>
         );

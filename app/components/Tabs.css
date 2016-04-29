@@ -1,7 +1,6 @@
 .tabs__panes {
     position: relative;
     overflow: hidden;
-    font-size: 0.875em;
 }
 
 .tabs__panes-container {
@@ -11,29 +10,43 @@
 
 .tabs__tab {
     display: inline-block;
-    width: 25%;
+    min-width: 25%;
     margin: 0;
     padding: 0 20px;
+    font-size: 0.875em;
     font-weight: 600;
+    height: 50px;
     line-height: 50px;
     color: #333333;
     text-align: center;
-    border-bottom: 1px solid #d9d9d9;
+    border: 1px solid #d9d9d9;
+    border-left: 0;
     background-color: #f2f2f2;
     cursor: pointer;
 }
 
-.tabs__tab:not(:first-child) {
-    border-left: 1px solid #d9d9d9;
+.tabs__panes-container_long .tabs__tab:last-child {
+    border-right: 0;
 }
 
 .tabs__tab_current {
     padding-bottom: 1px;
-    border-bottom: 1px solid transparent;
-    background-color: #ffffff;
+    border-bottom: 1px solid #fff;
+    background-color: #fff;
 }
 
 .tabs__tab-content {
     padding: 0 20px;
-    background-color: #ffffff;
+    background-color: #fff;
+    border-top: 1px solid #d9d9d9;
+    margin-top: -1px;
+}
+
+.tabs__tab_information {
+    position: relative;
+    float: right;
+    border: 0;
+    background: none;
+    font-weight: 400;
+    cursor: default;
 }
