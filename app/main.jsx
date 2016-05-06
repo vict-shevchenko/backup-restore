@@ -8,7 +8,7 @@ import { Provider } from 'react-redux'
 
 import reducers from './reducers'
 
-import BackupAndRestore from './components/App.jsx';
+import App from './components/App.jsx';
 
 let store = createStore(reducers);
 
@@ -20,8 +20,10 @@ ReactDOM.render(
             </Route>
         </Route>
     </Router>,*/
+
+
     <Provider store={store}>
-        <BackupAndRestore />
+        <App />
     </Provider>,
   document.getElementById('content1')
 );
