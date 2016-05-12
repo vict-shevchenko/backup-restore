@@ -5,7 +5,6 @@ var OpenBrowserPlugin = require('open-browser-webpack-plugin');
 module.exports = {
   devServer: {
     historyApiFallback: true,
-    hot: true,
     inline: true,
     progress: true,
     contentBase: './app',
@@ -15,7 +14,7 @@ module.exports = {
         target: 'http://192.168.56.101',
         secure: false,
         headers: {
-          'Cookie': 'JSESSIONID=ac7a2e635a5d908a4346f8cffcb4b0308025f20ba890e86012bd5644baa71723; _SID_=07b4589bfd66a717f5dd9a81181a3826035e5ebeffe84d1ab31246800b520ca9'
+          'Cookie': 'JSESSIONID=ac7a2e635a5d908a4346f8cffcb4b0308025f20ba890e86012bd5644baa71723; _SID_=94b3c30b8ff521d179fcb5356c7b34b3eb3ae0dfca73cfa2e86362ae8f420425'
         }
       }
     }
