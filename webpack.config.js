@@ -14,7 +14,7 @@ module.exports = {
         target: 'http://192.168.56.101',
         secure: false,
         headers: {
-          'Cookie': 'JSESSIONID=ac7a2e635a5d908a4346f8cffcb4b0308025f20ba890e86012bd5644baa71723; _SID_=94b3c30b8ff521d179fcb5356c7b34b3eb3ae0dfca73cfa2e86362ae8f420425'
+          'Cookie': 'JSESSIONID=ac7a2e635a5d908a4346f8cffcb4b0308025f20ba890e86012bd5644baa71723; _SID_=d14b89ead174a0326027cbac94cc3cdec4c5b994eec31c49348bbffc3c05a882'
         }
       }
     }
