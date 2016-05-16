@@ -10,7 +10,7 @@ import reducers from './reducers'
 
 import App from './components/App.jsx';
 
-let store = createStore(reducers);
+let store = window.devToolsExtension ? window.devToolsExtension()(createStore)(reducers) : createStore(reducers) ;
 
 ReactDOM.render(
     /*<Router history={browserHistory}>

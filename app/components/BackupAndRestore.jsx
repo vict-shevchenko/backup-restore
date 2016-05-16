@@ -3,7 +3,14 @@
  */
 
 import React, { PropTypes } from 'react';
+import { bindActionCreators } from 'redux';
 import {connect} from 'react-redux';
+import _without  from 'lodash/without';
+
+import { handleInitialBackupDataLoaded,
+  generalBackupActionCreators,
+  sshActionCreators,
+  smbActionCreators } from './../actions';
 
 function BackupDetailsList(props) {
   return (
@@ -17,16 +24,18 @@ function BackupDetailsList(props) {
 }
 
 
-function BackupCredentials ({credentials}) {
+function BackupCredentials ({credentials, onUsernameChange, onPasswordChange}) {
 
   return (
     <div>
-      <label >Username:{credentials.isUserNameRequired ? '*' : ''}</label>
-      <input type="text" value={credentials.username}/>
+      <label >Username:{credentials.isUserNameRequired ? '*' : ''}
+        <input type="text" value={credentials.username} onChange={onUsernameChange}/>
+      </label>
+      <br/>
 
-
-      <label for="backup_password">Password:</label>
-      <input type="password" value={credentials.username}/>
+      <label >Password:
+        <input type="password" value={credentials.password} onChange={onPasswordChange}/>
+      </label>
     </div>
   )
 }
@@ -38,51 +47,55 @@ function BackupTestConnection(props) {
     return (<span>Connection test successful</span>)
   }
 
-
   return (
     <div>
-      <button>Test Connection</button> {testing ? <span>testing... wait...</span> : ''}
+      <button type="button" disabled={!props.disabled}>Test Connection</button> {testing ? <span>testing... wait...</span> : ''}
       {error ? <span>{error}</span> : ''}
     </div>
   )
 }
 
 function SSHBackupOptions(props) {
-  const { host, port, directory, connection, credentials } = props.options;
+  const { host, port, directory, connection, credentials } = props.options,
+    {changeSSHHost, changeSSHPort, changeSSHDirectory, changeSSHUsername, changeSSHPassword,testSSHConnection } = props.actions;
 
   return (
     <div>
 
       <label>Host:*</label>
-      <input type="text" value={host} />
+      <input type="text" value={host} onChange={changeSSHHost} />
 
       <label>Port:</label>
-      <input type="text" value={port} />
-      <div id="backup_port_error" class="errorMsg"></div>
+      <input type="text" value={port}  onChange={changeSSHPort} />
+      <div id="backup_port_error" className="errorMsg"></div>
 
       <label>Directory:*</label>
-      <input type="text" value={directory} />
+      <input type="text" value={directory}  onChange={changeSSHDirectory} />
 
-      <BackupCredentials credentials={credentials} />
+      <BackupCredentials credentials={credentials} onUsernameChange={changeSSHUsername} onPasswordChange={changeSSHPassword} />
 
-      <BackupTestConnection connection={connection}/>
+      <BackupTestConnection connection={connection}
+                            disabled={host && directory && (credentials.isUserNameRequired ? credentials.username : true )}
+                            testConnection={testSSHConnection}/>
 
     </div>
   )
 }
 
 function SMBBackupOptions(props) {
-  const { path, connection, credentials } = props.options;
+  const { path, connection, credentials } = props.options,
+    {changeSMBPath, changeSMBUsername, changeSMBPassword, testSMBConnection } = props.actions;
 
   return (
     <div>
 
-      <label for="backup_path">Path:*</label>
-      <input type="text" value={path}/>
+      <label>Path:*
+        <input type="text" value={path} onChange={changeSMBPath} />
+      </label>
 
-      <BackupCredentials credentials={credentials}/>
+      <BackupCredentials credentials={credentials} onUsernameChange={changeSMBUsername} onPasswordChange={changeSMBPassword}/>
 
-      <BackupTestConnection connection={connection}/>
+      <BackupTestConnection connection={connection}  disabled={path && (credentials.isUserNameRequired ? credentials.username : true )}/>
 
     </div>
   )
@@ -90,30 +103,38 @@ function SMBBackupOptions(props) {
 
 function GlobalBackupOptions(props) {
 
-  const {selectedType, verify, exclude_sensitive_data, email_on_complete, email_to, reduce_size} = props.backupConfig;
+  const {selectedType, verify, exclude_sensitive_data, email_on_complete, email_to, reduce_size} = props.backupSetup,
+    {warn_local_disk_space_reduced, warn_local_disk_space} = props.backupData,
+    {changeVerifyOption, changeExcludeSensitiveData, changeEmailOnComplete, changeEmail, changeReduceSize} = props.generalActions;
+
+  let warnDiskSpace = false;
+
+  if(selectedType === 'local' && ((reduce_size && props.warn_local_disk_space_reduced) || props.warn_local_disk_space)) {
+
+  }
 
   return (
     <div>
       <h3>Options:</h3>
 
       <label>Verify backup:
-        <input type="checkbox" checked={verify}/>
+        <input type="checkbox" checked={verify} onClick={changeVerifyOption}/>
       </label><br/>
 
       <label>Exclude sensitive data:
-        <input type="checkbox" checked={exclude_sensitive_data} />
+        <input type="checkbox" checked={exclude_sensitive_data} onClick={changeExcludeSensitiveData} />
       </label><br/>
       
       <label>Email when complete:
-        <input type="checkbox" checked={email_on_complete} />
+        <input type="checkbox" checked={email_on_complete} onClick={changeEmailOnComplete}/>
       </label><br/>
 
       <label >To:
-        <input type="text" value={email_to}/>
+        <input type="text" disabled={!email_on_complete} value={email_to} onChange={changeEmail}/>
       </label><br/>
 
       <label>Reduce backup size (slower to restore):
-        <input type="checkbox" checked={reduce_size} />
+        <input type="checkbox" checked={reduce_size} onClick={changeReduceSize}/>
       </label><br/>
 
       <button type="button">Shutdown &amp; Backup</button><br/>
@@ -121,7 +142,7 @@ function GlobalBackupOptions(props) {
 
       <span alt="Warning"> All services will be shut down to make the backup.</span><br/>
 
-      {selectedType === 'local' && props.warn_local_disk_space ?
+      {(selectedType === 'local' && ((reduce_size && warn_local_disk_space_reduced) || warn_local_disk_space)) ?
         <span> Appliance disk space may be insufficient to accommodate this backup (assuming 50% compression).</span> : ''}
     </div>
   )
@@ -129,18 +150,11 @@ function GlobalBackupOptions(props) {
 
 
 
-function BackupDetailsPresenter(props) {
-  const {backup_contents, empty_contents, sensitive_data, backup_size} = props;
-  let backup_include = [].concat(backup_contents);
-
-  sensitive_data.forEach(value => {
-    let idx = backup_contents.indexOf(value);
-    backup_include = backup_include.splice(idx, 1);
-  });
+function BackupDetailsPresenter({backup_contents, empty_contents, sensitive_data, backup_size}) {
 
   return (
     <div>
-      <BackupDetailsList label="Backup Will Contain" list={backup_include}/>
+      <BackupDetailsList label="Backup Will Contain" list={backup_contents}/>
       <BackupDetailsList label="Not Present" list={empty_contents}/>
       {sensitive_data.length ? <BackupDetailsList label="Backup Will Not Contain" list={sensitive_data}/> : ''}
       <div>
@@ -159,30 +173,27 @@ BackupDetailsPresenter.propTypes = {
   backup_size: PropTypes.string,
 };
 const BackupDetailsContainer = connect( state => {
-      return {
-        backup_contents: state.backup_contents,
-        empty_contents: state.empty_contents,
-        sensitive_data: state.backupConfig.exclude_sensitive_data ? state.sensitive_data : [],
-        backup_size:  state.backupConfig.reduce_size ? state.backup_size_reduced :  state.backup_size,
-      }
-    })(BackupDetailsPresenter);
+  const {backup_contents, sensitive_data} = state.backupData;
+  
+  return {
+    backup_contents: state.backupSetup.exclude_sensitive_data ? _without(backup_contents, ...sensitive_data) : backup_contents,
+    empty_contents: state.backupData.empty_contents,
+    sensitive_data: state.backupSetup.exclude_sensitive_data ? sensitive_data : [],
+    backup_size:  state.backupSetup.reduce_size ? state.backupData.backup_size_reduced :  state.backupData.backup_size,
+  }
+})(BackupDetailsPresenter);
 
 
 function BackupConfigurationPresenter(props) {
-  const { backupConfig, sshOptions, smbOptions, onBackupTypeChange } = props;
-  let local_backup_overwritten_msg = '',
-    globalBackupOptions = '';
+  const {local_backup_exists, stand_alone} = props.backupData,
+    {types, selectedType, notes} = props.backupSetup,
+    {changeBackupType, changeBackupNote} = props.generalActions;
 
-  if (props.local_backup_exists) {
-    const backup_place = props.stand_alone ? 'on-appliance' : 'on-member',
-      msg = `Previous ${backup_place} backup will be overwritten.`;
+  let globalBackupOptions = '';
 
-    local_backup_overwritten_msg = <span>{msg}</span>;
-  }
-
-  if (backupConfig.selectedType === 'local' ||
-    (backupConfig.selectedType === 'ssh' && sshOptions.connection.isSuccessful) ||
-    (backupConfig.selectedType === 'smb' && smbOptions.connection.isSuccessful)) {
+  if (selectedType === 'local' ||
+    (selectedType === 'ssh' && props.sshOptions.connection.isSuccessful) ||
+    (selectedType === 'smb' && props.smbOptions.connection.isSuccessful)) {
     globalBackupOptions = <GlobalBackupOptions {...props}/>;
   }
 
@@ -190,24 +201,26 @@ function BackupConfigurationPresenter(props) {
     <div>
       <legend>Backup Destination:</legend>
 
-        <label>
-          Backup Type:
-          <select value={backupConfig.selectedType} onChange={onBackupTypeChange}>
-            {Object.keys(backupConfig.types).map(
-              (type_val, idx) => <option value={type_val} key={idx}>{backupConfig.types[type_val]}</option>
-            )}
-          </select>
-        </label>
+      <label>
+        Backup Type:
+        <select value={selectedType} onChange={changeBackupType}>
+          {Object.keys(types).map(
+            (type_val, idx) => <option value={type_val} key={idx}>{types[type_val]}</option>
+          )}
+        </select>
+      </label>
 
-      {local_backup_overwritten_msg}
+      <span>
+        {local_backup_exists ? 'Previous ' + (stand_alone ? 'on-appliance' : 'on-member') + ' backup will be overwritten.' : ''}
+      </span>
 
-        <label>
-          Notes:<br/>
-          <textarea value={backupConfig.notes} cols="42" rows="3" onchange="tw.backup.ui.typeChanged(this);" />
-        </label>
+      <label>
+        Notes:<br/>
+        <textarea value={notes} cols="42" rows="3" onChange={changeBackupNote} />
+      </label>
 
-      {backupConfig.selectedType === 'ssh' ? <SSHBackupOptions options={sshOptions} /> : ''}
-      {backupConfig.selectedType === 'smb' ? <SMBBackupOptions options={smbOptions} /> : ''}
+      {selectedType === 'ssh' ? <SSHBackupOptions options={props.sshOptions} actions={props.sshActions} /> : ''}
+      {selectedType === 'smb' ? <SMBBackupOptions options={props.smbOptions} actions={props.smbActions} /> : ''}
 
       {globalBackupOptions}
     </div>
@@ -215,7 +228,7 @@ function BackupConfigurationPresenter(props) {
 }
 
 BackupConfigurationPresenter.propTypes = {
-  backupConfig: PropTypes.shape({
+  backupSetup: PropTypes.shape({
     types: PropTypes.objectOf(React.PropTypes.string),
     selectedType: PropTypes.string,
     notes: PropTypes.string,
@@ -225,30 +238,42 @@ BackupConfigurationPresenter.propTypes = {
     email_to: PropTypes.string,
     reduce_size: PropTypes.bool
   }),
+  backupData: PropTypes.shape({
+    backup_size: PropTypes.string,
+    backup_size_reduced: PropTypes.string,
+    local_backup_exists: PropTypes.bool,
+    stand_alone: PropTypes.bool,
+    backup_contents: PropTypes.array,
+    empty_contents: PropTypes.array,
+    sensitive_data: PropTypes.array,
+    warn_local_disk_space: PropTypes.bool,
+    warn_local_disk_space_reduced: PropTypes.bool
+
+  }),
   sshOptions: PropTypes.object,
   smbOptions: PropTypes.object,
-  warn_local_disk_space: PropTypes.bool,
-  stand_alone: PropTypes.bool,
-  local_backup_exists: PropTypes.bool,
   // actions
-  onBackupTypeChange: PropTypes.func
+  generalActions: PropTypes.objectOf(PropTypes.func),
+  sshActions: PropTypes.objectOf(PropTypes.func),
+  smbActions: PropTypes.objectOf(PropTypes.func),
 };
 
 const BackupConfigurationContainer = connect( state => {
-
   return {
-    backupConfig: state.backupConfig,
+    backupSetup: state.backupSetup,
+    backupData: state.backupData,
     sshOptions: state.sshOptions,
     smbOptions: state.smbOptions,
-    warn_local_disk_space: state.warn_local_disk_space,
-    stand_alone: state.stand_alone,
-    local_backup_exists: state.local_backup_exists,
   }
-}, dispatch => {
-  return {
-    onBackupTypeChange : event => dispatch({type: 'BACKUP_TYPE_CHANGE', value: event.target.value})
+},
+  dispatch => {
+    return {
+      generalActions: bindActionCreators(generalBackupActionCreators, dispatch),
+      sshActions: bindActionCreators(sshActionCreators, dispatch),
+      smbActions: bindActionCreators(smbActionCreators, dispatch),
+    }
   }
-})(BackupConfigurationPresenter);
+)(BackupConfigurationPresenter);
 
 
 class CreateBackup extends React.Component {
@@ -265,14 +290,12 @@ class CreateBackup extends React.Component {
   }
 
   render() {
-    const {isLoading} = this.props;
-
-    if (isLoading) {
+    if (this.props.isLoading) {
       return (<span> loading ....</span>);
     }
 
     return (
-        <div>
+        <div className="clearfix">
           <div className="twoPanelSection formSection floatRight leftAlign">
             <BackupConfigurationContainer />
           </div>
@@ -283,25 +306,23 @@ class CreateBackup extends React.Component {
     )
   }
 }
-
 CreateBackup.propTypes = {
   isLoading: PropTypes.bool.isRequired,
   onInitialDataLoad: PropTypes.func.isRequired
 };
-
-const CreateBackupContainer = connect(
-  state => {
+const CreateBackupContainer = connect(state => {
     return {
       isLoading: state.isLoading,
     }
   },
   dispatch => {
     return {
-      onInitialDataLoad: function (data) {
-          dispatch(Object.assign({}, { type: 'SERVER_DATA_FETCHED', backup_data: data }));
-        }
+      onInitialDataLoad: data => {
+        dispatch(handleInitialBackupDataLoaded(data))
       }
-  })(CreateBackup);
+    }
+  }
+)(CreateBackup);
 
 
 const RestoreBackup = function () {
