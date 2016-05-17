@@ -1,6 +1,7 @@
 var webpack = require('webpack');
 var path = require('path');
 var uglifyJsPlugin = webpack.optimize.UglifyJsPlugin;
+var DefinePlugin = webpack.DefinePlugin;
 var CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
@@ -23,6 +24,9 @@ module.exports = {
     extensions: ['', '.js', '.jsx'],
   },
   plugins: [
+    new DefinePlugin({
+      'process.env.NODE_ENV': '"production"'
+    }),
     new webpack.optimize.DedupePlugin(),
     new uglifyJsPlugin({
       compress: {
