@@ -151,7 +151,9 @@ export const sshActionCreators = {
       dispatch({type: TEST_SSH_CONNECTION});
 
       fetch(`/ui/SetupBackupCreate?action=test_remote_details&backup_type=${selectedType}&backup_dir=${directory}&backup_host=${host}
-        &backup_port=${port}&backup_username=${username}&backup_password=${password}&reqhash=${nonce_token}`)
+        &backup_port=${port}&backup_username=${username}&backup_password=${password}&reqhash=${nonce_token}`, {
+        credentials: 'same-origin'
+      })
         .then(response => response.json())
         .then(json => dispatch(json.error ? {type: TEST_SSH_CONNECTION_ERROR, errorMsg: json.error} : {type: TEST_SSH_CONNECTION_OK}))
         .catch(ex => dispatch({type: TEST_SSH_CONNECTION_ERROR, errorMsg:ex}))
@@ -189,7 +191,9 @@ export const smbActionCreators = {
       dispatch({type: TEST_SMB_CONNECTION});
 
       return fetch(`/ui/SetupBackupCreate?action=test_remote_details&backup_type=${type}
-        &backup_path=${path}&backup_username=${username}&backup_password=${password}&reqhash=${nonce_token}`)
+        &backup_path=${path}&backup_username=${username}&backup_password=${password}&reqhash=${nonce_token}`, {
+        credentials: 'same-origin'
+      })
         .then(response => response.json())
         .then(json => dispatch(json.error ? {type: TEST_SMB_CONNECTION_OK} : {type: TEST_SMB_CONNECTION_ERROR, errorMsg: json.error}))
     }

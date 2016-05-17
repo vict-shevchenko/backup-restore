@@ -230,7 +230,7 @@ function BackupConfigurationPresenter(props) {
       <br/>
       <label>
         Notes:<br/>
-        <textarea value={notes} cols="42" rows="3" onChange={changeBackupNote} />
+        <textarea className="textarea-notes" value={notes} onChange={changeBackupNote} />
       </label>
 
       {selectedType === 'ssh' ? <SSHBackupOptions options={props.sshOptions} actions={props.sshActions} /> : ''}
@@ -294,7 +294,9 @@ class CreateBackup extends React.Component {
   }
 
   componentDidMount () {
-    fetch('/ui/i/Backup/Details ')
+    fetch('/ui/i/Backup/Details ', {
+      credentials: 'same-origin'
+    })
       .then(response => response.text())
       .then(text => text.replace(/while\(1\);/, ''))
       .then(text => JSON.parse(text))
@@ -307,7 +309,7 @@ class CreateBackup extends React.Component {
     }
 
     return (
-        <div className="clearfix">
+        <div className="clearfix tabContentHolder twoPanelTab">
           <div className="twoPanelSection formSection floatRight leftAlign">
             <BackupConfigurationContainer />
           </div>
@@ -353,7 +355,7 @@ const NoticeBackup = function (props) {
   return (
     <div>
       <span className="data_label">Last Backup Created:</span>
-      <a id="last_backup_event_link" href={`SetupAuditRecordView?nodeID=${id}`}>
+      <a id="last_backup_event_link" className="anchor_text" href={`SetupAuditRecordView?nodeID=${id}`}>
         {start_time ? start_time : '' }
         {duration ? ` (Duration: ${duration}` : ''}
       </a>

@@ -16,17 +16,17 @@ body, input {
   padding: 0;
 }
 
-a, a:link, a:visited  {
+a.anchor_text, a.anchor_text:link, a.anchor_text:visited  {
   color: #00a79d;
   position: relative;
   text-decoration: none;
 }
 
-a:hover, a:active {
+a.anchor_text:hover, a.anchor_text:active {
   color: #008d85
 }
 
-a:after {
+a.anchor_text:after {
   position: absolute;
   top: 100%;
   display: inline-block;
@@ -43,17 +43,21 @@ a:after {
   transition: all 0.25s ease;
 }
 
-a:hover {
+a.anchor_text:hover {
   text-decoration: none;
 }
 
-a:hover:after {
+a.anchor_text:hover:after {
   left: 0;
   width: 100%;
 }
 
 label {
   color: #999999;
+}
+
+textarea {
+  resize: none;
 }
 
 .clearfix:after {
@@ -144,6 +148,9 @@ label {
   border-bottom: 2px solid #f86e00;
 }
 
+.header {
+  margin: 0 !important;
+}
 .page__nav {
   padding-left: 300px;
 }
@@ -169,6 +176,10 @@ label {
   font-size: 1em;
   padding-left: 25px;
   color: #999999;
+}
+
+.content {
+  padding: 0 !important;
 }
 
 .page__empty {
