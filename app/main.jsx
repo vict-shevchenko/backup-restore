@@ -1,8 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import { createStore } from 'redux'
+import { compose, createStore, applyMiddleware  } from 'redux'
 import { Provider } from 'react-redux'
+import ReduxThunk from 'redux-thunk'
 
 //import { Router, Route, IndexRoute, browserHistory } from 'react-router'
 
@@ -10,7 +11,10 @@ import reducers from './reducers'
 
 import App from './components/App.jsx';
 
-let store = window.devToolsExtension ? window.devToolsExtension()(createStore)(reducers) : createStore(reducers) ;
+let store = createStore(reducers, {}, compose(
+  applyMiddleware(ReduxThunk),
+  window.devToolsExtension ? window.devToolsExtension() : f => f
+));
 
 ReactDOM.render(
     /*<Router history={browserHistory}>

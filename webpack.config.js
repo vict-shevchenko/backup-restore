@@ -10,11 +10,11 @@ module.exports = {
     contentBase: './app',
     port: 8080,
     proxy: {
-      '/ui/i/*': {
+      '/ui/*': {
         target: 'http://192.168.56.101',
         secure: false,
         headers: {
-          'Cookie': 'JSESSIONID=ac7a2e635a5d908a4346f8cffcb4b0308025f20ba890e86012bd5644baa71723; _SID_=173d687e2b0fc1129384d2b216a7e805f604cefe3bd3605e6710505dce12281b'
+          'Cookie': 'JSESSIONID=ac7a2e635a5d908a4346f8cffcb4b0308025f20ba890e86012bd5644baa71723; _SID_=9e537c61a2b457346e4951d5dbc7b789c831c9b2b46b2e5c8abe2661aa6ec8c6'
         }
       }
     }

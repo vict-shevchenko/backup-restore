@@ -9,20 +9,26 @@
 }
 
 .tabs__tab {
-    display: inline-block;
+    display: table;
+    float: left;
     min-width: 25%;
     margin: 0;
     padding: 0 20px;
     font-size: 0.875em;
     font-weight: 600;
     height: 50px;
-    line-height: 50px;
     color: #333333;
     text-align: center;
     border: 1px solid #d9d9d9;
     border-left: 0;
     background-color: #f2f2f2;
     cursor: pointer;
+}
+
+.tabs__tab-title {
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
 }
 
 .tabs__panes-container_long .tabs__tab:last-child {

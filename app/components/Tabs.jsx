@@ -33,7 +33,7 @@ export class Tabs extends React.Component {
                 <li key={index}
                     className={className}
                     onClick={this.handleClick.bind(this, index, child.props.url)}>
-                    <span>{child.props.label}</span>
+                    <span className="tabs__tab-title">{child.props.label}</span>
                 </li>
             );
         }
@@ -41,8 +41,8 @@ export class Tabs extends React.Component {
             <nav className="tabs__panes">
                 <ul className={'tabs__panes-container ' + (this.props.fullWidth ? 'tabs__panes-container_long': '')}>
                     {this.props.children.map(labels.bind(this))}
-                    <li className="tabs__tab tabs__tab_information">
-                        {this.props.notice}
+                    <li className="tabs__tab tabs__tab_information" style={ {maxWidth: ((4 - this.props.children.length) * 25) + '%' }}>
+                        <span className="tabs__tab-title">{this.props.notice}</span>
                     </li>
                 </ul>
             </nav>

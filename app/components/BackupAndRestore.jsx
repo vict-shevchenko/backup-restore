@@ -7,6 +7,8 @@ import { bindActionCreators } from 'redux';
 import {connect} from 'react-redux';
 import _without  from 'lodash/without';
 
+import Spinner from './Spinner.jsx'
+
 import { handleInitialBackupDataLoaded,
   generalBackupActionCreators,
   sshActionCreators,
@@ -49,15 +51,25 @@ function BackupTestConnection(props) {
 
   return (
     <div>
-      <button type="button" disabled={!props.disabled}>Test Connection</button> {testing ? <span>testing... wait...</span> : ''}
+      <button type="button" disabled={!props.disabled} onClick={props.testConnection}>Test Connection</button> {testing ? <span>testing... wait...</span> : ''}
+      <br/>
       {error ? <span>{error}</span> : ''}
     </div>
   )
 }
+BackupTestConnection.PropTypes = {
+  connection: PropTypes.shape({
+    testing: PropTypes.bool,
+    isSuccessful: PropTypes.bool,
+    error: PropTypes.string,
+  }).isRequired,
+  disabled: PropTypes.bool.isRequired,
+  testConnection: PropTypes.func.isRequired,
+};
 
 function SSHBackupOptions(props) {
   const { host, port, directory, connection, credentials } = props.options,
-    {changeSSHHost, changeSSHPort, changeSSHDirectory, changeSSHUsername, changeSSHPassword,testSSHConnection } = props.actions;
+    {changeSSHHost, changeSSHPort, changeSSHDirectory, changeSSHUsername, changeSSHPassword, testSSHConnection } = props.actions;
 
   return (
     <div>
@@ -76,7 +88,7 @@ function SSHBackupOptions(props) {
 
       <BackupTestConnection connection={connection}
                             disabled={host && directory && (credentials.isUserNameRequired ? credentials.username : true )}
-                            testConnection={testSSHConnection}/>
+                            testConnection={testSSHConnection} />
 
     </div>
   )
@@ -95,7 +107,9 @@ function SMBBackupOptions(props) {
 
       <BackupCredentials credentials={credentials} onUsernameChange={changeSMBUsername} onPasswordChange={changeSMBPassword}/>
 
-      <BackupTestConnection connection={connection}  disabled={path && (credentials.isUserNameRequired ? credentials.username : true )}/>
+      <BackupTestConnection connection={connection}
+                            disabled={path && (credentials.isUserNameRequired ? credentials.username : true )}
+                            testConnection={testSMBConnection} />
 
     </div>
   )
@@ -105,7 +119,7 @@ function GlobalBackupOptions(props) {
 
   const {selectedType, verify, exclude_sensitive_data, email_on_complete, email_to, reduce_size} = props.backupSetup,
     {warn_local_disk_space_reduced, warn_local_disk_space} = props.backupData,
-    {changeVerifyOption, changeExcludeSensitiveData, changeEmailOnComplete, changeEmail, changeReduceSize} = props.generalActions;
+    {changeVerifyOption, changeExcludeSensitiveData, changeEmailOnComplete, changeEmail, changeReduceSize, startBackup} = props.generalActions;
 
   let warnDiskSpace = false;
 
@@ -137,8 +151,7 @@ function GlobalBackupOptions(props) {
         <input type="checkbox" checked={reduce_size} onClick={changeReduceSize}/>
       </label><br/>
 
-      <button type="button">Shutdown &amp; Backup</button><br/>
-
+      <button type="button" className="btn btn_primary" onClick={startBackup}>Shutdown &amp; Backup</button><br/>
 
       <span alt="Warning"> All services will be shut down to make the backup.</span><br/>
 
@@ -149,7 +162,6 @@ function GlobalBackupOptions(props) {
 }
 
 
-
 function BackupDetailsPresenter({backup_contents, empty_contents, sensitive_data, backup_size}) {
 
   return (
@@ -158,7 +170,7 @@ function BackupDetailsPresenter({backup_contents, empty_contents, sensitive_data
       <BackupDetailsList label="Not Present" list={empty_contents}/>
       {sensitive_data.length ? <BackupDetailsList label="Backup Will Not Contain" list={sensitive_data}/> : ''}
       <div>
-        <h2>Backup Size:</h2>
+        <h3>Backup Size:</h3>
         <ul>
           {backup_size}
         </ul>
@@ -186,7 +198,7 @@ const BackupDetailsContainer = connect( state => {
 
 function BackupConfigurationPresenter(props) {
   const {local_backup_exists, stand_alone} = props.backupData,
-    {types, selectedType, notes} = props.backupSetup,
+    {types, selectedType, notes, isBackupRunning} = props.backupSetup,
     {changeBackupType, changeBackupNote} = props.generalActions;
 
   let globalBackupOptions = '';
@@ -199,7 +211,10 @@ function BackupConfigurationPresenter(props) {
 
   return (
     <div>
-      <legend>Backup Destination:</legend>
+      
+      {isBackupRunning ? <Spinner /> : ''}
+      
+      <h3>Backup Destination:</h3>
 
       <label>
         Backup Type:
@@ -210,10 +225,9 @@ function BackupConfigurationPresenter(props) {
         </select>
       </label>
 
-      <span>
-        {local_backup_exists ? 'Previous ' + (stand_alone ? 'on-appliance' : 'on-member') + ' backup will be overwritten.' : ''}
-      </span>
+      {local_backup_exists ? <span><br/>{'Previous ' + (stand_alone ? 'on-appliance' : 'on-member') + ' backup will be overwritten.'}</span> : '' }
 
+      <br/>
       <label>
         Notes:<br/>
         <textarea value={notes} cols="42" rows="3" onChange={changeBackupNote} />
@@ -226,7 +240,6 @@ function BackupConfigurationPresenter(props) {
     </div>
   )
 }
-
 BackupConfigurationPresenter.propTypes = {
   backupSetup: PropTypes.shape({
     types: PropTypes.objectOf(React.PropTypes.string),
@@ -257,7 +270,6 @@ BackupConfigurationPresenter.propTypes = {
   sshActions: PropTypes.objectOf(PropTypes.func),
   smbActions: PropTypes.objectOf(PropTypes.func),
 };
-
 const BackupConfigurationContainer = connect( state => {
   return {
     backupSetup: state.backupSetup,
@@ -331,10 +343,31 @@ const RestoreBackup = function () {
   )
 };
 
-const NoticeBackup = function () {
+const NoticeBackup = function (props) {
+  if (!props.last_backup) {
+    return <span>{''}</span>;
+  }
+
+  const {duration, start_time, id, success} = props.last_backup;
+
   return (
-    <span>last back up - <a href="#">yesterday</a></span>
+    <div>
+      <span className="data_label">Last Backup Created:</span>
+      <a id="last_backup_event_link" href={`SetupAuditRecordView?nodeID=${id}`}>
+        {start_time ? start_time : '' }
+        {duration ? ` (Duration: ${duration}` : ''}
+      </a>
+      {success === 'False' ? <span>(Failure)</span> : ''}
+      {props.backup_interrupted ? <span class="errorMsg">(Backup was interrupted)</span> : ''}
+    </div>
   )
 };
 
-export {CreateBackupContainer, RestoreBackup, NoticeBackup};
+const NoticeBackupContainer = connect (state => {
+  return {
+    last_backup: state.backupData ? state.backupData.last_backup : null,
+    backup_interrupted: state.backupData ? state.backupData.backup_interrupted : null,
+  }
+})(NoticeBackup);
+
+export {CreateBackupContainer, RestoreBackup, NoticeBackupContainer};

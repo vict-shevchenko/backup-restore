@@ -2,7 +2,7 @@ import React from 'react';
 import {Tabs, Pane} from './Tabs.jsx';
 import './App.css';
 import './BackupAndRestore.css'
-import {CreateBackupContainer, RestoreBackup, NoticeBackup} from './BackupAndRestore.jsx';
+import {CreateBackupContainer, RestoreBackup, NoticeBackupContainer} from './BackupAndRestore.jsx';
 
 export default function App(props) {
   return (
@@ -20,7 +20,7 @@ export default function App(props) {
         <span className="page__title-text_main">Appliance Backup</span>
       </div>
       <div className="page__content">
-        <Tabs selected={0} fullWidth={false} notice={<NoticeBackup/>}>
+        <Tabs selected={0} fullWidth={false} notice={<NoticeBackupContainer/>}>
           <Pane label="Create Backup" url="ui/SetupBackupCreate">
             <CreateBackupContainer/>
           </Pane>
