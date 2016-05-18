@@ -5,7 +5,7 @@
 import React, { PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import {connect} from 'react-redux';
-import _without  from 'lodash/without';
+import _ from 'lodash';
 
 import Spinner from './Spinner.jsx'
 
@@ -188,7 +188,7 @@ const BackupDetailsContainer = connect( state => {
   const {backup_contents, sensitive_data} = state.backupData;
   
   return {
-    backup_contents: state.backupSetup.exclude_sensitive_data ? _without(backup_contents, ...sensitive_data) : backup_contents,
+    backup_contents: state.backupSetup.exclude_sensitive_data ? _.without(backup_contents, ...sensitive_data) : backup_contents,
     empty_contents: state.backupData.empty_contents,
     sensitive_data: state.backupSetup.exclude_sensitive_data ? sensitive_data : [],
     backup_size:  state.backupSetup.reduce_size ? state.backupData.backup_size_reduced :  state.backupData.backup_size,
