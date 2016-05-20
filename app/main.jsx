@@ -37,5 +37,5 @@ ReactDOM.render(
     <Provider store={store}>
         <App />
     </Provider>,
-  document.getElementById('content1')
+  document.getElementById('backup_and_restore')
 );
