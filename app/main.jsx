@@ -27,8 +27,8 @@ if (module.hot) {
 ReactDOM.render(
     /*<Router history={browserHistory}>
         <Route path="/" component={App}>
-            <Route path="/manage" component={App}>
-                <Route path="/manage/credentials/:type" component={App} />
+            <Route path="/manage" component={Manage}>
+                <Route path="/manage/credentials/:type" component={Credentials} />
             </Route>
         </Route>
     </Router>,*/
